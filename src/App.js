@@ -1,24 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import AddSourceForm from './components/AddSource';
+import SourceTable from './components/SourceTable';
+import LevelTable from './components/LevelTable';
+import WordTable from './components/WordTable';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <h2>Courses for English</h2>
+      {/* <div>
+        <AddSourceForm />
+        </div> */}
+      <div>
+      <SourceTable />
+      </div>
+      <div>
+      <LevelTable />
+        </div>
+        <WordTable />
+      </div>
   );
 }
 
