@@ -31,13 +31,14 @@ const Table = () => {
         idSource: idSource,
         nameSource: nameSource,
         desSource: desSource
-    }).then(() => {
-        console.log('success')
+    }).then((response) => {
+        alert('add success')
+        setSourcesList(response.data)
     })
   
 }
   const view = (id) => {
-    Axios.get(`http://localhost:5000/sources/levels/${id}`)
+    Axios.get(`http://localhost:5000/levels/${id}`)
     .then((response) => {
       setLevelsList(response.data)
       
@@ -48,25 +49,28 @@ const Table = () => {
         idSource: idSource,
         nameSource: nameSource,
         desSource: desSource
-  }).then(() => {
+  }).then((response) => {
     console.log('updated success')
+    setSourcesList(response.data.sourcesList)
   })
       }
 
 
   const deleteSource = (id) => {
+    console.log(id)
     Axios.delete(`http://localhost:5000/sources/${id}`)
-    .then((response) => {
-      setSourcesList(sourcesList.filter((source) => {
-        return source.id !== id;
-      }))
+    .then(() => {
+        alert('deleted')
+      setSourcesList(sourcesList.filter(source => 
+         source.id !== id 
+      ))
     })
 }
 
 //level table
 
 const viewVocab = (id) => {
-  Axios.get(`http://localhost:5000/sources/levels/words/${id}`)
+  Axios.get(`http://localhost:5000/words/${id}`)
   .then((response) => {
     setVocabList(response.data)
     
@@ -74,7 +78,7 @@ const viewVocab = (id) => {
 }
 
 const addLevel = () => {
-  Axios.post('http://localhost:5000/sources/levels', {
+  Axios.post('http://localhost:5000/levels', {
       idLevel: idLevel,
       level: level,
       idSource: idSource,
@@ -84,7 +88,7 @@ const addLevel = () => {
 }
 
 const editLevel = (id) => {
-  Axios.put(`http://localhost:5000/sources/levels/${id}`,{
+  Axios.put(`http://localhost:5000/levels/${id}`,{
     idLevel: idLevel,
       level: level,
       idSource: idSource,
@@ -94,7 +98,7 @@ const editLevel = (id) => {
 }
 
 const deleteLevel = (id) => {
-  Axios.delete(`http://localhost:5000/sources/levels/${id}`)
+  Axios.delete(`http://localhost:5000/levels/${id}`)
   .then((response) => {
     setLevelsList(levelsList.filter((level) => {
       return level.idLevel !== id;
@@ -105,7 +109,7 @@ const deleteLevel = (id) => {
 // word table
 
 const addWord = () => {
-  Axios.post('http://localhost:5000/sources/levels/words', {
+  Axios.post('http://localhost:5000/words', {
       id: id,
       idLevel: idLevel,
       vocab: vocab,
@@ -116,7 +120,7 @@ const addWord = () => {
 }
 
 const editWord = (id) => {
-  Axios.put(`http://localhost:5000/sources/levels/words/${id}`,{
+  Axios.put(`http://localhost:5000/words/${id}`,{
     id: id,
     idLevel: idLevel,
     vocab: vocab,
@@ -127,7 +131,7 @@ const editWord = (id) => {
 }
 
 const deleteWord = (id) => {
-  Axios.delete(`http://localhost:5000/sources/levels/words/${id}`)
+  Axios.delete(`http://localhost:5000/words/${id}`)
   .then((response) => {
     setVocabList(vocabList.filter((word) => {
       return word.id !== id;
@@ -135,11 +139,36 @@ const deleteWord = (id) => {
   })
 }
 
+const showAddForm = () => {
+  document.getElementById('add-course-form').style.display = 'block';
+  document.getElementById('add-btn').style.display = 'none';
+}
+
+const cancelAddCourseForm = () => {
+  document.getElementById('add-course-form').style.display = 'none';
+  document.getElementById('add-btn').style.display = 'block';
+}
+
+const showUpdateCourseForm = () => {
+  setNameSource(nameSource);
+  document.getElementById('update-course-form').style.display = 'block';
+  document.getElementsByClassName('view-btn').disabled = true;
+  document.getElementById('new-name-source').value = nameSource ;
+}
+
+const cancelUpdateCourseForm = () => {
+  document.getElementById('update-course-form').style.display = 'none';
+  document.getElementById('add-btn').style.display = 'block';
+  document.querySelector('.view-btn').disabled = false;
+}
+
   return (
     <>  
     {/*source table*/}
-    <div> 
-            <h3>Add course</h3>
+    <button id='add-btn' onClick={() => {showAddForm()}}>Add a new course</button>
+    <br/>
+    <div id="add-course-form" style={{display: 'none'}}> 
+      <h3>Add course</h3>
         <form onSubmit={(e)=>{
             e.preventDefault();
             submit();
@@ -156,33 +185,35 @@ const deleteWord = (id) => {
             <input type="text" name="des"  onChange={(e) => {
                 setDesSource(e.target.value) 
             }} />
-            <button type="submit">Add new book</button>
+            <button type="submit" onClick={() =>{cancelAddCourseForm()}}>Add new book</button>
+            <button type="button" onClick={() => {cancelAddCourseForm()}}>Cancel</button>
         </form>
         </div>
-        <div>
+        <br/>
+        <div id="update-course-form" style={{display: 'none'}}>
         <form
         onSubmit={e =>{
             e.preventDefault()
             editSources();
         }}>
             {/* <label>ID</label>
-            <input type="number" name="id" value={idSource} onChange={(e) => {
+            <input type="number" id="id" value={idSource} onChange={(e) => {
                 setIdSource(e.target.value)
             }} /> */}
-            <br></br>
             <label>New Name Source</label>
-            <input type="text" name="name"  onChange={(e) => {
+            <input type="text" id="new-name-source"  onChange={(e) => {
                 setNameSource(e.target.value) 
             }} />
-            <br></br>
             <label>New Description Source</label>
             <input type="text" name="des"  onChange={(e) => {
                 setDesSource(e.target.value) 
             }} />
-    {/* <button type="submit" onClick={()=>{editSources(idSource)}} >Edit book</button>  */}
+    <button type="submit" onClick={()=>{editSources(idSource)}}>Save</button> 
+    <button type="button" onClick={() =>{cancelUpdateCourseForm()}}>Cancel</button>
 </form>
         </div>
-    <table border="5" cellPadding ="5">
+        <br></br>
+    <table id="course-table"border="5" cellPadding ="5" >
       <thead>
         <tr>
           <th>ID</th>
@@ -194,17 +225,17 @@ const deleteWord = (id) => {
       <tbody>
           {sourcesList.map(source => (
               <tr key={source.idSource}>
-              <td>{source.idSource}</td>
-              <td>{source.nameSource}</td>
+              <td id="id-source">{source.idSource}</td>
+              <td id="name-source">{source.nameSource}</td>
               <td>{source.desSource}</td>
 
           <td>
-            <button onClick={()=>{view(source.idSource)}}
-             className="view-button">View</button>
-            <button onClick={()=>{editSources(source.idSource)}}
-             className="edit-button">Edit</button>
+            <button  onClick={()=>{view(source.idSource)}}
+             className="view-btn">View</button>
+            <button onClick={()=>{showUpdateCourseForm()}}
+             className="edit-btn">Edit</button>
             <button onClick={() => {deleteSource(source.idSource)}}
-            className="delete-button">Delete</button>
+            className="delete-btn">Delete</button>
           </td>
         </tr>
           ))}
@@ -364,6 +395,12 @@ const deleteWord = (id) => {
       </tbody>
     </table>
 
+
+<button onClick={() =>
+ Axios.get('http://localhost:5000/words')
+ .then((response) => {
+   setVocabList(response.data)
+ }) }>show</button>
 
     </>
   )
