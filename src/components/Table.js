@@ -2,7 +2,6 @@ import React , {useState, useEffect} from 'react';
 import Axios from 'axios';
 
 
-
 const Table = () => {
 
   const [sourcesList, setSourcesList] = useState([]);
@@ -16,6 +15,8 @@ const Table = () => {
   const [id, setId] = useState();
   const [vocab, setVocab] = useState("");
   const [meaning, setMeaning] = useState("");
+
+
 
   useEffect(()=>{
     fetch('http://localhost:5000/sources')
@@ -41,17 +42,18 @@ const Table = () => {
     Axios.get(`http://localhost:5000/levels/${id}`)
     .then((response) => {
       setLevelsList(response.data)
-      
     })
+    
   }
+
   const editSources = (id) => {
         Axios.put(`http://localhost:5000/sources/${id}`,{
         idSource: idSource,
         nameSource: nameSource,
         desSource: desSource
   }).then((response) => {
-    console.log('updated success')
-    setSourcesList(response.data.sourcesList)
+    alert('updated success')
+    setSourcesList({...sourcesList})
   })
       }
 
@@ -149,18 +151,48 @@ const cancelAddCourseForm = () => {
   document.getElementById('add-btn').style.display = 'block';
 }
 
-const showUpdateCourseForm = () => {
-  setNameSource(nameSource);
+const showUpdateCourseForm = (id) => {
+  console.log(id)
   document.getElementById('update-course-form').style.display = 'block';
-  document.getElementsByClassName('view-btn').disabled = true;
-  document.getElementById('new-name-source').value = nameSource ;
+  document.getElementById('id-input').value = id;
+  let disCourseView = document.querySelectorAll('.view-btn');
+  let disCourseEdit = document.querySelectorAll('.edit-btn');
+  let disCourseDelete = document.querySelectorAll('.delete-btn');
+
+  for (let i = 0; i < disCourseView.length; i++) {
+    disCourseView[i].disabled = true;
+  }
+
+  for (let i = 0; i < disCourseEdit.length; i++) {
+    disCourseEdit[i].disabled = true;
+  }
+
+  for (let i = 0; i < disCourseDelete.length; i++) {
+    disCourseDelete[i].disabled = true;
+  }
 }
 
 const cancelUpdateCourseForm = () => {
   document.getElementById('update-course-form').style.display = 'none';
   document.getElementById('add-btn').style.display = 'block';
-  document.querySelector('.view-btn').disabled = false;
+  let disCourseView = document.querySelectorAll('.view-btn');
+  let disCourseEdit = document.querySelectorAll('.edit-btn');
+  let disCourseDelete = document.querySelectorAll('.delete-btn');
+
+  for (let i = 0; i < disCourseView.length; i++) {
+    disCourseView[i].disabled = false;
+  }
+
+  for (let i = 0; i < disCourseEdit.length; i++) {
+    disCourseEdit[i].disabled = false;
+  }
+
+  for (let i = 0; i < disCourseDelete.length; i++) {
+    disCourseDelete[i].disabled = false;
+  }
 }
+
+
 
   return (
     <>  
@@ -194,12 +226,12 @@ const cancelUpdateCourseForm = () => {
         <form
         onSubmit={e =>{
             e.preventDefault()
-            editSources();
+            editSources(document.getElementById('id-input').value);
         }}>
-            {/* <label>ID</label>
-            <input type="number" id="id" value={idSource} onChange={(e) => {
+            <label>ID</label>
+            <input type="number" id="id-input" onChange={(e) => {
                 setIdSource(e.target.value)
-            }} /> */}
+            }} />
             <label>New Name Source</label>
             <input type="text" id="new-name-source"  onChange={(e) => {
                 setNameSource(e.target.value) 
@@ -208,12 +240,14 @@ const cancelUpdateCourseForm = () => {
             <input type="text" name="des"  onChange={(e) => {
                 setDesSource(e.target.value) 
             }} />
-    <button type="submit" onClick={()=>{editSources(idSource)}}>Save</button> 
+    <button type="submit" onClick={()=>{cancelUpdateCourseForm()}}>Save</button> 
     <button type="button" onClick={() =>{cancelUpdateCourseForm()}}>Cancel</button>
-</form>
-        </div>
+        </form>
+
+    </div>
         <br></br>
-    <table id="course-table"border="5" cellPadding ="5" >
+        <div>
+    <table id="course-table" border="5" cellPadding ="5" >
       <thead>
         <tr>
           <th>ID</th>
@@ -224,15 +258,14 @@ const cancelUpdateCourseForm = () => {
       </thead>
       <tbody>
           {sourcesList.map(source => (
-              <tr key={source.idSource}>
+              <tr id="course-row" key={source.idSource}>
               <td id="id-source">{source.idSource}</td>
               <td id="name-source">{source.nameSource}</td>
               <td>{source.desSource}</td>
-
           <td>
             <button  onClick={()=>{view(source.idSource)}}
              className="view-btn">View</button>
-            <button onClick={()=>{showUpdateCourseForm()}}
+            <button onClick={()=>{showUpdateCourseForm(source.idSource)}}
              className="edit-btn">Edit</button>
             <button onClick={() => {deleteSource(source.idSource)}}
             className="delete-btn">Delete</button>
@@ -241,10 +274,10 @@ const cancelUpdateCourseForm = () => {
           ))}
       </tbody>
     </table>
-
+            </div>
 
 {/* //level table */}
-    <div>
+    {/* <div>
             <h3>Add level</h3>
         <form onSubmit={(e)=>{
             e.preventDefault();
@@ -313,11 +346,11 @@ const cancelUpdateCourseForm = () => {
         </tr>
           ))}
       </tbody>
-    </table>
+    </table> */}
 
 {/* //words table */}
 
-<div>
+{/* <div>
             <h3>Add word</h3>
         <form onSubmit={(e)=>{
             e.preventDefault();
@@ -400,7 +433,7 @@ const cancelUpdateCourseForm = () => {
  Axios.get('http://localhost:5000/words')
  .then((response) => {
    setVocabList(response.data)
- }) }>show</button>
+ }) }>show</button> */}
 
     </>
   )
