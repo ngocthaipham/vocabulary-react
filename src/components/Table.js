@@ -1,6 +1,8 @@
 import React , {useState, useEffect} from 'react';
 import Axios from 'axios';
-import LevelTable from './LevelTable';
+import view from './LevelTable';
+
+
 
 
 const Table = () => {
@@ -31,13 +33,14 @@ const Table = () => {
         setSourcesList(response.data)
 })
 }
-  const view = (id) => {
-    Axios.get(`http://localhost:5000/levels/${id}`)
-    .then((response) => {
-      setLevelsList(response.data)
+
+const view = (id) => {
+  Axios.get(`http://localhost:5000/levels/${id}`)
+  .then((response) => {
+    setLevelsList(response.data)
     })
-    
-  }
+
+}
 
   const editSources = (id) => {
         Axios.put(`http://localhost:5000/sources/${id}`,{
@@ -114,6 +117,16 @@ const cancelUpdateCourseForm = () => {
   }
 }
 
+function myFunction(id) {
+  var table = document.getElementById('course-table');
+  var tr = document.getElementById(id);
+  var highlight = tr.style.backgroundColor = "gray"
+
+
+  
+}
+
+
 
 
   return (
@@ -159,7 +172,7 @@ const cancelUpdateCourseForm = () => {
                 setNameSource(e.target.value) 
             }} />
             <label>New Description Source</label>
-            <input type="text" name="des"  onChange={(e) => {
+            <input type="text" name="new-des-source"  onChange={(e) => {
                 setDesSource(e.target.value) 
             }} />
     <button type="submit" onClick={()=>{cancelUpdateCourseForm()}}>Save</button> 
@@ -180,12 +193,12 @@ const cancelUpdateCourseForm = () => {
       </thead>
       <tbody>
           {sourcesList.map(source => (
-              <tr id="course-row" key={source.idSource}>
+              <tr id={source.idSource} key={source.idSource}>
               <td id="id-source">{source.idSource}</td>
               <td id="name-source">{source.nameSource}</td>
-              <td>{source.desSource}</td>
+              <td id="des-source">{source.desSource}</td>
           <td>
-            <button  onClick={()=>{view(source.idSource)}}
+            <button  onClick={()=>{myFunction(source.idSource)}}
              className="view-btn">View</button>
             <button onClick={()=>{showUpdateCourseForm(source.idSource)}}
              className="edit-btn">Edit</button>

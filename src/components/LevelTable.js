@@ -17,6 +17,7 @@ useEffect(()=>{
 }, [])
 
 
+
 const viewVocab = (id) => {
   Axios.get(`http://localhost:5000/words/${id}`)
   .then((response) => {
@@ -192,4 +193,4 @@ const cancelUpdateLevelForm = () => {
 };
 
 
-  export default LevelTable ;
+  export default LevelTable  ;
