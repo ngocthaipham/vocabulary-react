@@ -107,6 +107,21 @@ const cancelUpdateLevelForm = () => {
   }
 }
 
+// function myFunction(id) {
+//   var table = document.getElementById('level-table');
+//   var tbody = document.getElementById('level-body')
+//   var tr = document.getElementById(id).parentNode
+//   console.log(tr, table)
+// //   for (var i = 0; i < length.childNodes.length; i++) {
+// //     if (length.childNodes[i].nodeType == 1) {
+// //     length.childNodes[i].style.backgroundColor = "white"
+// // }
+// // tr.style.backgroundColor = "gray"
+// // }
+
+// }
+
+
   return (
     <> 
   <br/>
@@ -160,7 +175,7 @@ const cancelUpdateLevelForm = () => {
 
   <br/>
     <div>
-    <table border="5" cellPadding ="5"  >   
+    <table border="5" cellPadding ="5" id="level-table" >   
       <thead>
         <tr>
           <th>ID</th>
@@ -169,14 +184,14 @@ const cancelUpdateLevelForm = () => {
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="level-body">
           {levelsList.map(level => (
-            <tr key={level.idLevel}>
+            <tr id={level.idLevel} className={level.idLevel} key={level.idLevel}>
             <td>{level.idLevel}</td>
             <td>{level.level}</td>
             <td>{level.idSource}</td>
           <td>
-            <button
+            <button  
              className="view-btn">View</button>
             <button onClick={() => {showUpdateLevelForm(level.idLevel)}}
              className="edit-btn">Edit</button>

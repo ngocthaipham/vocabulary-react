@@ -119,15 +119,18 @@ const cancelUpdateCourseForm = () => {
 
 function myFunction(id) {
   var table = document.getElementById('course-table');
-  var tr = document.getElementById(id);
-  var highlight = tr.style.backgroundColor = "gray"
-
-
-  
+  var tr = document.getElementById(id)
+  var length = tr.parentElement;
+  console.log(tr, table)
+  console.log(length)
+  for (var i = 0; i < length.childNodes.length; i++) {
+    if (length.childNodes[i].nodeType == 1) {
+    length.childNodes[i].style.backgroundColor = "white"
+}
+tr.style.backgroundColor = "gray"
 }
 
-
-
+}
 
   return (
     <>  
