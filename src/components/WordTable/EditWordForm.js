@@ -37,7 +37,7 @@ const updateWord = (id) => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            updateWord(props.currentWord.id)
+            updateWord(props.currentIdWord)
             props.setEditState(false)
           }}
         >
@@ -45,6 +45,7 @@ const updateWord = (id) => {
           <input
             type="number"
             id="id-vocab-input"
+            value={props.currentWord.id}
             onChange={(e) => {
               setId(e.target.value);
             }}
@@ -53,6 +54,7 @@ const updateWord = (id) => {
           <input
             type="number"
             name="id-level"
+            value={props.currentWord.idLevel}
             onChange={(e) => {
               setIdLevel(e.target.value);
             }}
@@ -61,6 +63,7 @@ const updateWord = (id) => {
           <input
             type="text"
             name="word"
+            value={props.currentWord.vocab}
             onChange={(e) => {
               setVocab(e.target.value);
             }}
@@ -69,6 +72,7 @@ const updateWord = (id) => {
           <input
             type="text"
             name="meaning"
+            value={props.currentWord.meaning}
             onChange={(e) => {
               setMeaning(e.target.value);
             }}

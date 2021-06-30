@@ -27,6 +27,10 @@ const update = () => {
     });
   };
 
+function cancel () {
+  props.setEditState(false)
+  props.setCurrentId(0)
+}
   return (
     <div id="update-course-form">
       {!props.editState ? (
@@ -36,7 +40,7 @@ const update = () => {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              updateCourse(props.currentCourse.idSource)
+              updateCourse(props.currentId)
               props.setEditState(false)
             }}
           >
@@ -44,7 +48,7 @@ const update = () => {
             <input
               type="number"
               id="id-input"
-              value={props.currentCourse.idSource}
+              value={props.currentId}
               onChange={(e) => {
                 setIdSource(e.target.value)
               }}
@@ -53,7 +57,7 @@ const update = () => {
             <input
               type="text"
               id="new-name-source"
-            //   value={props.currentCourse.nameSource}
+              value={props.currentCourse.nameSource}
               onChange={(e) => {
                 setNameSource(e.target.value)
               }}
@@ -62,13 +66,13 @@ const update = () => {
             <input
               type="text"
               name="new-des-source"
-            //   value={props.currentCourse.desSource}
+              value={props.currentCourse.desSource}
               onChange={(e) => {
                 setDesSource(e.target.value)
               }}
             />
             <button type="submit">Save</button>
-            <button onClick={() =>props.setEditState(false)}
+            <button onClick={cancel}
              type="button">Cancel</button>
           </form>
         </div>

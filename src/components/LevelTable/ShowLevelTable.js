@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Level from "./levelApi";
-import Axios from "axios";
-import ShowCourseTable from "../CourseTable/ShowCourseTable";
 import AddLevelForm from "./AddLevelForm";
 import EditLevelForm from "./EditLevelForm";
+import ShowWordTable from "../WordTable/ShowWordTable";
+
 const ShowLevelTable = (props) => {
   const [levelsList, setLevelsList] = useState([]);
   const [editState, setEditState] = useState(false);
@@ -11,34 +11,24 @@ const ShowLevelTable = (props) => {
   const [idLevel, setIdLevel] = useState();
   const [level, setLevel] = useState("");
   const [idSource, setIdSource] = useState("");
-
-  // useEffect(() => {
-  //   Level.get().then((response) => {
-  //     setLevelsList(response.data);
-  //   });
-  // }, []);
-
-  useEffect(() => {
-    Level.getLevelTable(1)
-    .then((response) => {
-      setLevelsList(response.data);
-    });
-  }, []);
-
+  const [wordState, setWordState] = useState(false);
+  const [wordList, setWordList] = useState([]);
+  const [currentIdLevel, setCurrentIdLevel] = useState();
 
   const render = (response) => {
     setLevelsList(response);
   };
 
-  const a = () => {
-    setLevelsList(props.array)
-  }
   const showEditForm = (id) => {
-    setCurrentLevel(levelsList[id - 1]);
+    for (let i = 0; i < props.levelsList.length; i++) {
+      if (id === props.levelsList[i].idLevel) {
+        setCurrentLevel(props.levelsList[i]);
+      }
+    }
+    setCurrentIdLevel(id);
     console.log(id);
     console.log(currentLevel);
     setEditState(true);
-    console.log(props.array);
   };
 
   function disableTable() {
@@ -56,6 +46,31 @@ const ShowLevelTable = (props) => {
     });
   };
 
+  const showWord = (id) => {
+    setWordState(true);
+    setCurrentIdLevel(id);
+    Level.getWordTable(id).then((response) => {
+      setWordList(response.data);
+      console.log(levelsList);
+    });
+  };
+
+  function highlight(id) {
+    if (id === currentIdLevel) {
+      return {
+        backgroundColor: "pink",
+      };
+    }
+    return {
+      backgroundColor: "white",
+    };
+  }
+
+  function cancel() {
+    props.setLevelState(false);
+    props.setCurrentId(0);
+  }
+
   return (
     <>
       {!props.levelState ? (
@@ -72,6 +87,8 @@ const ShowLevelTable = (props) => {
             idLevel={idLevel}
             level={level}
             idSource={idSource}
+            currentIdLevel={currentIdLevel}
+            setCurrentIdLevel={setCurrentIdLevel}
           />
           <div>
             <table border="5" cellPadding="5" id="level-table">
@@ -81,20 +98,25 @@ const ShowLevelTable = (props) => {
                   <th>Level</th>
                   <th>ID Source</th>
                   <th>Actions</th>
+                  <th>
+                    <button onClick={cancel}>X</button>
+                  </th>
                 </tr>
               </thead>
               <tbody id="level-body">
-                {levelsList.map((level) => (
-                  <tr
-                    id="id-level-table"
-                    className={level.idLevel}
-                    key={level.idLevel}
-                  >
+                {props.levelsList.map((level) => (
+                  <tr key={level.idLevel} style={highlight(level.idLevel)}>
                     <td>{level.idLevel}</td>
                     <td>{level.level}</td>
                     <td>{level.idSource}</td>
                     <td>
-                      <button disabled={disableTable()} className="view-btn">
+                      <button
+                        onClick={() => {
+                          showWord(level.idLevel);
+                        }}
+                        disabled={disableTable()}
+                        className="view-btn"
+                      >
                         View
                       </button>
                       <button
@@ -121,6 +143,12 @@ const ShowLevelTable = (props) => {
               </tbody>
             </table>
           </div>
+          <ShowWordTable
+            wordState={wordState}
+            setWordState={setWordState}
+            wordList={wordList}
+            setCurrentIdLevel={setCurrentIdLevel}
+          />
         </div>
       )}
     </>

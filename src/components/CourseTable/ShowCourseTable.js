@@ -10,11 +10,10 @@ const ShowCourseTable = () => {
   const [nameSource, setNameSource] = useState("");
   const [desSource, setDesSource] = useState("");
   const [editState, setEditState] = useState(false);
-  const [currentCourse, setCurrentCourse] = useState();
+  const [currentCourse, setCurrentCourse] = useState({});
   const [levelsList, setLevelsList] = useState([]);
   const [levelState, setLevelState] = useState(false);
-  const [currentIdCourse, setCurrentIdCourse] = useState(1);
-  const [array, setArray] = useState([])
+  const [currentId, setCurrentId] = useState();
 
   useEffect(() => {
     Axios.get("http://localhost:5000/sources").then((response) => {
@@ -25,11 +24,17 @@ const ShowCourseTable = () => {
   const render = (response) => {
     setCourseList(response);
   };
-
+  const renderLevelList = (res) => {
+    setLevelsList(res)
+  }
   const showEditForm = (id) => {
-    setCurrentCourse(coursesList[id - 1]);
-    console.log(currentIdCourse);
+    for( let i = 0; i< coursesList.length ; i++) {
+      if(id === coursesList[i].idSource) {
+        setCurrentCourse(coursesList[i])
+      }
+    }
     setEditState(true);
+    setCurrentId(id)
   };
 
   const removeCourses = (id) => {
@@ -47,27 +52,26 @@ const ShowCourseTable = () => {
     }
   }
 
-  function highlight(id) {
-    for (let i = 0; i < coursesList.length; i++) {
-      if (id === coursesList[i].idSource) {
-        return {
-          backgroundColor: "gray",
-        };
-      }
-    }
-    return { backgroundColor: "pink" };
-  }
-
   const showLevel = (id) => {
-    setCurrentIdCourse(id);
+    setCurrentCourse(coursesList[id-1])
     setLevelState(true);
-    console.log(levelState);
-    console.log(currentIdCourse);
-    Course.getLevelTable(id)
-    .then(response=>{
-      setArray(response.data)
-      console.log(array)
-    })
+    setCurrentId(id)
+    console.log(coursesList);
+    Course.getLevelTable(id).then((response) => {
+      setLevelsList(response.data);
+      // console.log(id);
+    });
+  };
+
+  function highlight(id) {
+    if (id === currentId) {
+      return {
+        backgroundColor: "pink",
+      };
+    }
+    return {
+      backgroundColor: "white",
+    };
   }
 
   return (
@@ -84,9 +88,10 @@ const ShowCourseTable = () => {
         nameSource={nameSource}
         desSource={desSource}
         coursesList={coursesList}
-        currentCourse={currentCourse}
-        setCurrentCourse={setCurrentCourse}
+        currentId={currentId}
         render={render}
+        currentCourse={currentCourse}
+        setCurrentId={setCurrentId}
       />
       <div>
         <table id="course-table" border="5" cellPadding="5">
@@ -100,7 +105,7 @@ const ShowCourseTable = () => {
           </thead>
           <tbody>
             {coursesList.map((course) => (
-              <tr key={course.idSource} style={highlight()}>
+              <tr key={course.idSource} style={highlight(course.idSource)}>
                 <td id="id-source">{course.idSource}</td>
                 <td id="name-source">{course.nameSource}</td>
                 <td id="des-source">{course.desSource}</td>
@@ -139,11 +144,12 @@ const ShowCourseTable = () => {
         </table>
 
         <ShowLevelTable
-          array={array}
-          currentIdCourse={currentIdCourse}
           idSource={idSource}
           levelState={levelState}
           setLevelState={setLevelState}
+          levelsList={levelsList}
+          renderLevelList={renderLevelList}
+          setCurrentId={setCurrentId}
         />
       </div>
     </>

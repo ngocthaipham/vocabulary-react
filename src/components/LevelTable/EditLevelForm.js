@@ -26,6 +26,11 @@ const EditLevelForm = (props) => {
         })
     }
 
+    function cancel () {
+      props.setEditState(false)
+      props.setCurrentIdLevel(0)
+    }
+
     return (
     <>
     {!props.editState ? (
@@ -35,7 +40,7 @@ const EditLevelForm = (props) => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            updateLevel(props.currentLevel.idLevel)
+            updateLevel(props.currentIdLevel)
             props.setEditState(false)
           }}
         >
@@ -43,7 +48,7 @@ const EditLevelForm = (props) => {
           <input
             type="number"
             id="id-level-input"
-            // value={props.currentLevel.idLevel}
+            value={props.currentLevel.idLevel}
             onChange={(e) => {
               setIdLevel(e.target.value);
             }}
@@ -52,6 +57,8 @@ const EditLevelForm = (props) => {
           <input
             type="number"
             id="level"
+            value={props.currentLevel.level}
+
             onChange={(e) => {
               setLevel(e.target.value);
             }}
@@ -60,6 +67,7 @@ const EditLevelForm = (props) => {
           <input
             type="number"
             name="id-source"
+            value={props.currentLevel.idSource}
             onChange={(e) => {
               setIdSource(e.target.value);
             }}
@@ -71,7 +79,7 @@ const EditLevelForm = (props) => {
           </button>
           <button
             type="button"
-            onClick={() => {props.setEditState(false)}}
+            onClick={cancel}
           >
             Cancel
           </button>
