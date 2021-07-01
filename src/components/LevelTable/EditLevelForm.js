@@ -2,90 +2,77 @@ import Level from "./levelApi";
 import React, { useState } from "react";
 
 const EditLevelForm = (props) => {
-    const [idLevel, setIdLevel] = useState();
-    const [level, setLevel] = useState("");
-    const [idSource, setIdSource] = useState("");
+  const [idLevel, setIdLevel] = useState();
+  const [newLevel, setNewLevel] = useState("");
+  const [newIdSource, setNewIdSource] = useState("");
 
-    const update = () => {
-        Level.get()
-        .then(response => {
-            props.render(response.data)
-        })
-      }
+  const update = () => {
+    Level.getLevelTable(props.currentIdCourse).then((response) => {
+      props.reRender(response.data);
+    });
+  };
 
-    const updateLevel = (id) => {
-        var data = {
-            level: level,
-            idSource: idSource
-        }
+  const updateLevel = (id) => {
+    var data = {
+      level: newLevel,
+      idSource: newIdSource,
+    };
 
-        Level.editLevel(id, data)
-        .then(response=> {
-            alert(response.data)
-            update()
-        })
-    }
+    Level.editLevel(id, data).then((response) => {
+      alert(response.data);
+      update();
+    });
+  };
 
-    function cancel () {
-      props.setEditState(false)
-      props.setCurrentIdLevel(0)
-    }
+  function cancel() {
+    props.updateEditForm(false);
+    props.setId(0);
+  }
 
-    return (
+  return (
     <>
-    {!props.editState ? (
+      {!props.isShowEditForm ? (
         <p></p>
-    ) : (
-      <div id="update-level-form" >
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            updateLevel(props.currentIdLevel)
-            props.setEditState(false)
-          }}
-        >
-          <label>ID</label>
-          <input
-            type="number"
-            id="id-level-input"
-            value={props.currentLevel.idLevel}
-            onChange={(e) => {
-              setIdLevel(e.target.value);
+      ) : (
+        <div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              updateLevel(props.currentIdLevel);
+              props.updateEditForm(false);
             }}
-          />
-          <label>New Level</label>
-          <input
-            type="number"
-            id="level"
-            value={props.currentLevel.level}
-
-            onChange={(e) => {
-              setLevel(e.target.value);
-            }}
-          />
-          <label>New ID Source</label>
-          <input
-            type="number"
-            name="id-source"
-            value={props.currentLevel.idSource}
-            onChange={(e) => {
-              setIdSource(e.target.value);
-            }}
-          />
-          <button
-            type="submit"
           >
-            Save
-          </button>
-          <button
-            type="button"
-            onClick={cancel}
-          >
-            Cancel
-          </button>
-        </form>
-      </div>
-    )}
+            <label>ID</label>
+            <input
+              type="number"
+              defaultValue={props.currentIdLevel}
+              onChange={(e) => {
+                setIdLevel(e.target.value);
+              }}
+            />
+            <label>New Level</label>
+            <input
+              type="number"
+              defaultValue={props.currentLevel.level}
+              onChange={(e) => {
+                setNewLevel(e.target.value);
+              }}
+            />
+            <label>New ID Source</label>
+            <input
+              type="number"
+              defaultValue={props.currentLevel.idSource}
+              onChange={(e) => {
+                setNewIdSource(e.target.value);
+              }}
+            />
+            <button type="submit">Save</button>
+            <button type="button" onClick={cancel}>
+              Cancel
+            </button>
+          </form>
+        </div>
+      )}
     </>
   );
 };

@@ -24,4 +24,11 @@ const editLevel = (id, data) => {
   return http.put(`/levels/${id}`, data);
 };
 
-export default {addLevel, deleteLevel, getLevelTable, getWordTable, editLevel, get}
+export default {
+  addLevel,
+  deleteLevel,
+  getLevelTable,
+  getWordTable,
+  editLevel,
+  get,
+};

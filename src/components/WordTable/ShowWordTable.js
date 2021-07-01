@@ -3,14 +3,11 @@ import Word from ".././WordTable/wordApi";
 import AddWordForm from "./AddWordForm";
 import EditWordForm from "./EditWordForm";
 const ShowWordTable = (props) => {
-  const [wordList, setWordList] = useState([]);
-  const [editState, setEditState] = useState(false);
   const [currentWord, setCurrentWord] = useState({});
-  const [id, setId] = useState();
-  const [currentIdWord, setCurrentIdWord] = useState();
+  const [isShowEditForm, setIsShowEditForm] = useState(false);
 
-  const render = (response) => {
-    setWordList(response);
+  const reRender = (response) => {
+    props.updateWordList(response);
   };
 
   const showEditForm = (id) => {
@@ -19,29 +16,41 @@ const ShowWordTable = (props) => {
         setCurrentWord(props.wordList[i]);
       }
     }
-    console.log(id);
-    console.log(currentWord);
-    setEditState(true);
-    setCurrentIdWord(id);
+    props.updateCurrentIdWord(id);
+    setIsShowEditForm(true);
   };
 
-  function disableTable() {
-    if (!editState) {
+  function disableButton() {
+    if (!isShowEditForm) {
       return false;
     } else {
       return true;
     }
   }
 
+  const setIdWord = (res) => {
+    props.updateCurrentIdWord(res);
+  };
+
+  const updateEditForm = (res) => {
+    setIsShowEditForm(res);
+  };
+
   const removeWord = (id) => {
     Word.deleteWord(id).then(() => {
       alert("remove success");
-      setWordList(wordList.filter((word) => word.id !== id));
+      renderAfterRemove();
+    });
+  };
+
+  const renderAfterRemove = () => {
+    Word.getWordTable(props.currentIdLevel).then((response) => {
+      reRender(response.data);
     });
   };
 
   function highlight(id) {
-    if (id === currentIdWord) {
+    if (id === props.currentIdWord) {
       return {
         backgroundColor: "pink",
       };
@@ -52,24 +61,28 @@ const ShowWordTable = (props) => {
   }
 
   function cancel() {
-    props.setWordState(false);
-    props.setCurrentIdLevel(0);
+    props.showWordList(false);
+    props.updateCurrentIdLevel(0);
   }
 
   return (
     <>
-      {!props.wordState ? (
+      {!props.isShowWordList ? (
         <p></p>
       ) : (
         <div>
-          <AddWordForm render={render} />
+          <AddWordForm
+            reRender={reRender}
+            currentIdLevel={props.currentIdLevel}
+          />
           <EditWordForm
-            id={id}
-            editState={editState}
-            setEditState={setEditState}
+            isShowEditForm={isShowEditForm}
+            reRender={reRender}
+            updateEditForm={updateEditForm}
+            currentIdLevel={props.currentIdLevel}
             currentWord={currentWord}
-            render={render}
-            currentIdWord={currentIdWord}
+            currentIdWord={props.currentIdWord}
+            setIdWord={setIdWord}
           />
           <table border="5" cellPadding="5">
             <thead>
@@ -96,8 +109,7 @@ const ShowWordTable = (props) => {
                       onClick={() => {
                         showEditForm(word.id);
                       }}
-                      disabled={disableTable()}
-                      className="edit-btn"
+                      disabled={disableButton()}
                     >
                       Edit
                     </button>
@@ -105,8 +117,7 @@ const ShowWordTable = (props) => {
                       onClick={() => {
                         removeWord(word.id);
                       }}
-                      disabled={disableTable()}
-                      className="delete-btn"
+                      disabled={disableButton()}
                     >
                       Delete
                     </button>

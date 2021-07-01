@@ -7,21 +7,11 @@ const AddCourseForm = (props) => {
   const [desSource, setDesSource] = useState("");
   const [addState, setAddState] = useState(false);
 
-  const showAddForm = () => {
-    setAddState(true);
-  };
-  const hideAddForm = () => {
-    setAddState(false);
-  };
-
   const update = () => {
-    Course.get()
-    .then(response => {
-        props.render(response.data)
-    })
-  }
-
-  
+    Course.get().then((response) => {
+      props.reRender(response.data);
+    });
+  };
 
   const addCourse = () => {
     var data = {
@@ -32,54 +22,22 @@ const AddCourseForm = (props) => {
     Course.addCourse(data).then((response) => {
       alert(response.data);
       setAddState(false);
-        update();
+      update();
     });
   };
-  //   const initialCourseState = {
-  //     idSource: "",
-  //     nameSource: "",
-  //     desSource: "",
-  //   };
-  //   const [course, setCourse] = useState(initialCourseState);
-  //   const [addState, setAddState] = useState(false);
-  //   //   const [idSource, setIdSource] = useState();
-  //   //   const [nameSource, setNameSource] = useState("");
-  //   //   const [desSource, setDesSource] = useState("");
-
-  //   const handleInput = event => {
-  //     const { name, value } = event.target;
-  //     setCourse({ ...course, [name]: value });
-  //   };
-
-  //   const saveCourse = () => {
-  //     var data = {
-  //       idSource: course.idSource,
-  //       nameSource: course.nameSource,
-  //       desSource: course.desSource,
-  //     };
-
-  //     Course.addCourse(data).then((response) => {
-  //       setCourse({
-  //         idSource: response.data.idSource,
-  //         nameSource: response.data.nameSource,
-  //         desSource: response.data.desSource,
-  //       });
-  //     console.log(response.data)
-  //     });
-  //   };
-
-  //   const newCourse = () => {
-  //     setCourse(initialCourseState);
-  //   };
 
   return (
     <div>
       {!addState ? (
-        <button onClick={showAddForm} id="add-btn">
+        <button
+          onClick={() => {
+            setAddState(true);
+          }}
+        >
           Add a new course
         </button>
       ) : (
-        <div id="add-course-form">
+        <div>
           <h3>Add course</h3>
           <form
             onSubmit={(e) => {
@@ -90,8 +48,6 @@ const AddCourseForm = (props) => {
             <label>ID</label>
             <input
               type="number"
-              name="id"
-              // value={course.idSource}
               onChange={(e) => {
                 setIdSource(e.target.value);
               }}
@@ -99,8 +55,6 @@ const AddCourseForm = (props) => {
             <label>Name Source</label>
             <input
               type="text"
-              name="name"
-              // value={course.nameSource}
               onChange={(e) => {
                 setNameSource(e.target.value);
               }}
@@ -108,14 +62,18 @@ const AddCourseForm = (props) => {
             <label>Description Source</label>
             <input
               type="text"
-              name="des"
-              // value={course.desSource}
               onChange={(e) => {
                 setDesSource(e.target.value);
               }}
             />
             <button type="submit">Add new book</button>
-            <button onClick={hideAddForm}>Cancel</button>
+            <button
+              onClick={() => {
+                setAddState(false);
+              }}
+            >
+              Cancel
+            </button>
           </form>
         </div>
       )}

@@ -2,61 +2,68 @@ import React, { useState, useEffect } from "react";
 import Level from "./levelApi";
 import AddLevelForm from "./AddLevelForm";
 import EditLevelForm from "./EditLevelForm";
-import ShowWordTable from "../WordTable/ShowWordTable";
 
 const ShowLevelTable = (props) => {
-  const [levelsList, setLevelsList] = useState([]);
-  const [editState, setEditState] = useState(false);
+  const [isShowEditForm, setIsShowEditForm] = useState(false);
   const [currentLevel, setCurrentLevel] = useState({});
-  const [idLevel, setIdLevel] = useState();
-  const [level, setLevel] = useState("");
-  const [idSource, setIdSource] = useState("");
-  const [wordState, setWordState] = useState(false);
-  const [wordList, setWordList] = useState([]);
-  const [currentIdLevel, setCurrentIdLevel] = useState();
 
-  const render = (response) => {
-    setLevelsList(response);
+  const reRender = (response) => {
+    props.updateLevelList(response);
+  };
+
+  const renderWordList = (response) => {
+    props.updateWordList(response);
   };
 
   const showEditForm = (id) => {
-    for (let i = 0; i < props.levelsList.length; i++) {
-      if (id === props.levelsList[i].idLevel) {
-        setCurrentLevel(props.levelsList[i]);
+    for (let i = 0; i < props.levelList.length; i++) {
+      if (id === props.levelList[i].idLevel) {
+        setCurrentLevel(props.levelList[i]);
       }
     }
-    setCurrentIdLevel(id);
-    console.log(id);
-    console.log(currentLevel);
-    setEditState(true);
+    props.updateCurrentIdLevel(id);
+    setIsShowEditForm(true);
   };
 
-  function disableTable() {
-    if (!editState) {
+  const setId = (res) => {
+    props.updateCurrentIdLevel(res);
+  };
+
+  const updateEditForm = (res) => {
+    setIsShowEditForm(res);
+  };
+
+  function disableButton() {
+    if (!isShowEditForm) {
       return false;
     } else {
       return true;
     }
   }
 
+  const renderAfterRemove = () => {
+    Level.getLevelTable(props.currentIdCourse).then((response) => {
+      reRender(response.data);
+    });
+  };
+
   const removeLevel = (id) => {
     Level.deleteLevel(id).then(() => {
       alert("remove success");
-      setLevelsList(levelsList.filter((level) => level.idLevel !== id));
+      renderAfterRemove();
     });
   };
 
   const showWord = (id) => {
-    setWordState(true);
-    setCurrentIdLevel(id);
+    props.showWordList(true);
+    props.updateCurrentIdLevel(id);
     Level.getWordTable(id).then((response) => {
-      setWordList(response.data);
-      console.log(levelsList);
+      renderWordList(response.data);
     });
   };
 
   function highlight(id) {
-    if (id === currentIdLevel) {
+    if (id === props.currentIdLevel) {
       return {
         backgroundColor: "pink",
       };
@@ -67,31 +74,31 @@ const ShowLevelTable = (props) => {
   }
 
   function cancel() {
-    props.setLevelState(false);
-    props.setCurrentId(0);
+    props.showLevelList(false);
+    props.updateCurrentIdCourse(0);
   }
 
   return (
     <>
-      {!props.levelState ? (
+      {!props.isShowLevelList ? (
         <p></p>
       ) : (
         <div>
-          <AddLevelForm render={render} />
+          <AddLevelForm
+            reRender={reRender}
+            currentIdCourse={props.currentIdCourse}
+          />
           <EditLevelForm
-            editState={editState}
-            setEditState={setEditState}
+            setId={setId}
+            isShowEditForm={isShowEditForm}
+            updateEditForm={updateEditForm}
             currentLevel={currentLevel}
-            setCurrentLevel={setCurrentLevel}
-            render={render}
-            idLevel={idLevel}
-            level={level}
-            idSource={idSource}
-            currentIdLevel={currentIdLevel}
-            setCurrentIdLevel={setCurrentIdLevel}
+            reRender={reRender}
+            currentIdLevel={props.currentIdLevel}
+            currentIdCourse={props.currentIdCourse}
           />
           <div>
-            <table border="5" cellPadding="5" id="level-table">
+            <table border="5" cellPadding="5">
               <thead>
                 <tr>
                   <th>ID</th>
@@ -103,8 +110,8 @@ const ShowLevelTable = (props) => {
                   </th>
                 </tr>
               </thead>
-              <tbody id="level-body">
-                {props.levelsList.map((level) => (
+              <tbody>
+                {props.levelList.map((level) => (
                   <tr key={level.idLevel} style={highlight(level.idLevel)}>
                     <td>{level.idLevel}</td>
                     <td>{level.level}</td>
@@ -114,26 +121,23 @@ const ShowLevelTable = (props) => {
                         onClick={() => {
                           showWord(level.idLevel);
                         }}
-                        disabled={disableTable()}
-                        className="view-btn"
+                        disabled={disableButton()}
                       >
                         View
                       </button>
                       <button
-                        disabled={disableTable()}
+                        disabled={disableButton()}
                         onClick={() => {
                           showEditForm(level.idLevel);
                         }}
-                        className="edit-btn"
                       >
                         Edit
                       </button>
                       <button
-                        disabled={disableTable()}
+                        disabled={disableButton()}
                         onClick={() => {
                           removeLevel(level.idLevel);
                         }}
-                        className="delete-btn"
                       >
                         Delete
                       </button>
@@ -143,12 +147,6 @@ const ShowLevelTable = (props) => {
               </tbody>
             </table>
           </div>
-          <ShowWordTable
-            wordState={wordState}
-            setWordState={setWordState}
-            wordList={wordList}
-            setCurrentIdLevel={setCurrentIdLevel}
-          />
         </div>
       )}
     </>

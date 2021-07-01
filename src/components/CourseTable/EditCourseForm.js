@@ -2,78 +2,73 @@ import React, { useState } from "react";
 import Course from "./courseApi";
 
 const EditCourseForm = (props) => {
-
   const [idSource, setIdSource] = useState();
-  const [nameSource, setNameSource] = useState("");
-  const [desSource, setDesSource] = useState("");
+  const [newNameSource, setNewNameSource] = useState();
+  const [newDesSource, setNewDesSource] = useState();
 
-const update = () => {
-        Course.get()
-        .then(response => {
-            props.render(response.data)
-        })
-      }
+  const update = () => {
+    Course.get().then((response) => {
+      props.reRender(response.data);
+    });
+  };
 
   const updateCourse = (id) => {
     var data = {
-        // idSource: idSource,
-        nameSource: nameSource,
-        desSource: desSource,
-      };
-    Course.editCourse(id, data,{
-    }).then((response) => {
+      nameSource: newNameSource,
+      desSource: newDesSource,
+    };
+    Course.editCourse(id, data).then((response) => {
       alert(response.data);
       update();
     });
   };
 
-function cancel () {
-  props.setEditState(false)
-  props.setCurrentId(0)
-}
+  function cancel() {
+    props.renderEdit(false);
+    props.setId(0);
+  }
+
   return (
-    <div id="update-course-form">
-      {!props.editState ? (
-       <p></p>
+    <div>
+      {!props.isShowEditForm ? (
+        <p></p>
       ) : (
         <div>
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              updateCourse(props.currentId)
-              props.setEditState(false)
+              updateCourse(props.currentIdCourse);
+              props.renderEdit(false);
             }}
           >
             <label>ID</label>
             <input
               type="number"
-              id="id-input"
-              value={props.currentId}
+              value={props.currentIdCourse}
               onChange={(e) => {
-                setIdSource(e.target.value)
+                setIdSource(e.target.value);
               }}
             />
             <label>New Name Source</label>
             <input
               type="text"
-              id="new-name-source"
-              value={props.currentCourse.nameSource}
+              defaultValue={props.currentCourse.nameSource}
               onChange={(e) => {
-                setNameSource(e.target.value)
+                setNewNameSource(e.target.value);
               }}
             />
             <label>New Description Source</label>
             <input
               type="text"
-              name="new-des-source"
-              value={props.currentCourse.desSource}
+              defaultValue={props.currentCourse.desSource}
               onChange={(e) => {
-                setDesSource(e.target.value)
+                setNewDesSource(e.target.value);
               }}
             />
             <button type="submit">Save</button>
-            <button onClick={cancel}
-             type="button">Cancel</button>
+            <button onClick={cancel} type="button">
+              Cancel
+            </button>
           </form>
         </div>
       )}

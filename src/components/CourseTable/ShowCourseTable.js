@@ -3,17 +3,11 @@ import Axios from "axios";
 import Course from "./courseApi";
 import AddCourseForm from "./AddCourseForm";
 import EditCourseForm from "./EditCourseForm";
-import ShowLevelTable from "../LevelTable/ShowLevelTable";
-const ShowCourseTable = () => {
+const ShowCourseTable = (props) => {
   const [coursesList, setCourseList] = useState([]);
-  const [idSource, setIdSource] = useState();
-  const [nameSource, setNameSource] = useState("");
-  const [desSource, setDesSource] = useState("");
-  const [editState, setEditState] = useState(false);
+  const [isShowEditForm, setIsShowEditForm] = useState(false);
   const [currentCourse, setCurrentCourse] = useState({});
-  const [levelsList, setLevelsList] = useState([]);
-  const [levelState, setLevelState] = useState(false);
-  const [currentId, setCurrentId] = useState();
+
 
   useEffect(() => {
     Axios.get("http://localhost:5000/sources").then((response) => {
@@ -21,31 +15,39 @@ const ShowCourseTable = () => {
     });
   }, []);
 
-  const render = (response) => {
+  const reRender = (response) => {
     setCourseList(response);
   };
   const renderLevelList = (res) => {
-    setLevelsList(res)
-  }
-  const showEditForm = (id) => {
-    for( let i = 0; i< coursesList.length ; i++) {
-      if(id === coursesList[i].idSource) {
-        setCurrentCourse(coursesList[i])
-      }
-    }
-    setEditState(true);
-    setCurrentId(id)
+    props.updateLevelList(res)
   };
 
-  const removeCourses = (id) => {
+  const renderEdit = (res) => {
+    setIsShowEditForm(res)
+  }
+
+  const setId = (res) => {
+    props.updateCurrentIdCourse(res)
+  }
+  const showEditForm = (id) => {
+    for (let i = 0; i < coursesList.length; i++) {
+      if (id === coursesList[i].idSource) {
+        setCurrentCourse(coursesList[i]);
+      }
+    }
+    setIsShowEditForm(true);
+    props.updateCurrentIdCourse(id);
+  };
+
+  const removeCourse = (id) => {
     Course.deleteCourse(id).then((response) => {
       alert("remove success");
       setCourseList(coursesList.filter((course) => course.idSource !== id));
     });
   };
 
-  function disableTable() {
-    if (!editState) {
+  function disableButton() {
+    if (!isShowEditForm) {
       return false;
     } else {
       return true;
@@ -53,18 +55,15 @@ const ShowCourseTable = () => {
   }
 
   const showLevel = (id) => {
-    setCurrentCourse(coursesList[id-1])
-    setLevelState(true);
-    setCurrentId(id)
-    console.log(coursesList);
+    props.showLevelList(true)
+    props.updateCurrentIdCourse(id);
     Course.getLevelTable(id).then((response) => {
-      setLevelsList(response.data);
-      // console.log(id);
+      renderLevelList(response.data)
     });
   };
 
   function highlight(id) {
-    if (id === currentId) {
+    if (id === props.currentIdCourse) {
       return {
         backgroundColor: "pink",
       };
@@ -77,24 +76,18 @@ const ShowCourseTable = () => {
   return (
     <>
       <AddCourseForm
-        coursesList={coursesList}
-        setCourseList={setCourseList}
-        render={render}
+        reRender={reRender}
       />
       <EditCourseForm
-        editState={editState}
-        setEditState={setEditState}
-        idSource={idSource}
-        nameSource={nameSource}
-        desSource={desSource}
-        coursesList={coursesList}
-        currentId={currentId}
-        render={render}
+        isShowEditForm={isShowEditForm}
+        renderEdit={renderEdit}
+        currentIdCourse={props.currentIdCourse}
+        reRender={reRender}
         currentCourse={currentCourse}
-        setCurrentId={setCurrentId}
+        setId={setId}
       />
       <div>
-        <table id="course-table" border="5" cellPadding="5">
+        <table border="5" cellPadding="5">
           <thead>
             <tr>
               <th>ID</th>
@@ -106,13 +99,12 @@ const ShowCourseTable = () => {
           <tbody>
             {coursesList.map((course) => (
               <tr key={course.idSource} style={highlight(course.idSource)}>
-                <td id="id-source">{course.idSource}</td>
-                <td id="name-source">{course.nameSource}</td>
-                <td id="des-source">{course.desSource}</td>
+                <td>{course.idSource}</td>
+                <td>{course.nameSource}</td>
+                <td>{course.desSource}</td>
                 <td>
                   <button
-                    disabled={disableTable()}
-                    className="view-btn"
+                    disabled={disableButton()}
                     onClick={() => {
                       showLevel(course.idSource);
                     }}
@@ -120,20 +112,18 @@ const ShowCourseTable = () => {
                     View
                   </button>
                   <button
-                    disabled={disableTable()}
+                    disabled={disableButton()}
                     onClick={() => {
                       showEditForm(course.idSource);
                     }}
-                    className="edit-btn"
                   >
                     Edit
                   </button>
                   <button
-                    disabled={disableTable()}
+                    disabled={disableButton()}
                     onClick={() => {
-                      removeCourses(course.idSource);
+                      removeCourse(course.idSource);
                     }}
-                    className="delete-btn"
                   >
                     Delete
                   </button>
@@ -142,15 +132,6 @@ const ShowCourseTable = () => {
             ))}
           </tbody>
         </table>
-
-        <ShowLevelTable
-          idSource={idSource}
-          levelState={levelState}
-          setLevelState={setLevelState}
-          levelsList={levelsList}
-          renderLevelList={renderLevelList}
-          setCurrentId={setCurrentId}
-        />
       </div>
     </>
   );
