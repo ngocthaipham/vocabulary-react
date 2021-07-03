@@ -1,0 +1,366 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700);
+h1 {
+  font-size: 30px;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: 300;
+  text-align: center;
+  margin-bottom: 15px;
+}
+h3 {
+  font-size: 20px;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: 300;
+}
+body {
+  font-family: "Roboto", sans-serif;
+  background: linear-gradient(to right, #25c481, #25b7c4);
+  margin: 0px 50px 50px 50px;
+}
+.header {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+.content {
+  height: 300px;
+  overflow-x: auto;
+  margin-top: 0px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+tr:hover {
+  background-color: rgba(126, 228, 214, 0.3);
+}
+td {
+  padding: 15px;
+  text-align: center;
+  vertical-align: middle;
+  font-weight: 300;
+  font-size: 20px;
+  color: #fff;
+  border-bottom: solid 1.5px rgba(255, 255, 255, 0.1);
+}
+th {
+  padding: 20px 15px;
+  text-align: center;
+  font-weight: 500;
+  font-size: 22px;
+  color: #fff;
+  text-transform: uppercase;
+}
+table {
+  width: 100%;
+  table-layout: fixed;
+}
+.footer {
+  margin-top: 40px;
+  padding: 10px;
+  /* text-align: center; */
+  font-size: 15px;
+  font-family: arial;
+  color: #fff;
+}
+.footer a {
+  color: #fff;
+  text-decoration: none;
+}
+.footer a:hover {
+  text-decoration: underline;
+}
+
+button {
+  font-family: inherit;
+}
+/* // action buttons */
+.view-btn,
+.edit-btn,
+.delete-btn {
+  font-size: 12px;
+  letter-spacing: 1px;
+  padding: 13px 30px 13px;
+  border: 0px solid;
+  cursor: pointer;
+  position: relative;
+  background-color: rgba(126, 228, 214, 0.3);
+}
+.view-btn div {
+  color: white;
+  transition: transform 0.8s;
+}
+.view-btn:hover {
+  background-color: rgba(49, 170, 154, 0.3);
+}
+.view-btn:hover div {
+  transform: translateX(-6px);
+}
+.edit-btn div {
+  color: white;
+}
+.edit-btn:hover {
+  background: rgba(49, 170, 154, 0.3);
+}
+.circle {
+  width: 5px;
+  height: 5px;
+  background: rgba(49, 170, 154, 0.3);
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  overflow: hidden;
+  transition: 500ms;
+}
+.edit-btn:hover .circle {
+  height: 45px;
+  width: 100%;
+  left: 0;
+  border-radius: 0;
+  border-bottom: 2px solid #eee;
+}
+.delete-btn,
+.delete-btn span {
+  transition: 350ms;
+}
+.delete-btn .text {
+  transform: translateX(35px);
+  color: white;
+}
+.delete-btn .trash-icon {
+  position: absolute;
+  padding-left: 5px;
+  transform: translateX(0px);
+}
+.delete-btn:hover {
+  background: rgba(49, 170, 154, 0.3);
+}
+
+.delete-btn:hover .text {
+  color: transparent;
+}
+
+.delete-btn:hover .trash-icon {
+  transform: translateX(-30px);
+  color: red;
+}
+/* // back button */
+.back-btn {
+  width: 50px;
+  border: 0px solid;
+  cursor: pointer;
+  background-color: transparent;
+}
+.outer {
+  position: relative;
+  margin: auto;
+  width: 100%;
+  cursor: pointer;
+}
+
+.inner {
+  width: inherit;
+  text-align: center;
+}
+
+.back-btn-content {
+  font-size: 15px;
+  line-height: 25px;
+  text-transform: uppercase;
+  color: #fff;
+  transition: all 0.3s ease-in;
+  opacity: 0;
+  cursor: pointer;
+  padding:0px;
+}
+
+.inner:before,
+.inner:after {
+  position: absolute;
+  content: "";
+  height: 1px;
+  width: inherit;
+  background: white;
+  left: 0;
+  transition: all 0.3s ease-in;
+}
+
+.inner:before {
+  top: 50%;
+  transform: rotate(45deg);
+}
+
+.inner:after {
+  bottom: 50%;
+  transform: rotate(-45deg);
+}
+
+.outer:hover label {
+  opacity: 1;
+}
+
+.outer:hover .inner:before,
+.outer:hover .inner:after {
+  transform: rotate(0);
+}
+
+.outer:hover .inner:before {
+  top: 0;
+}
+
+.outer:hover .inner:after {
+  bottom: 0;
+}
+/* //add component
+//add button */
+.add-btn {
+  color: #fff;
+  font-size: 15px;
+  padding: 13px 38px 13px 25px;
+  border: 0px solid;
+  cursor: pointer;
+  background-color: rgba(126, 228, 214, 0.3);
+}
+.add-btn,
+.add-btn span {
+  transition: 350ms;
+}
+.add-btn .text {
+  transform: translateX(35px);
+  color: white;
+}
+.add-btn .add-icon {
+  position: absolute;
+  padding-left: 7px;
+  transform: translateX(0px);
+}
+.add-btn:hover {
+  background: rgba(49, 170, 154, 0.3);
+}
+
+.add-btn:hover .text {
+  color: transparent;
+}
+
+.add-btn:hover .add-icon {
+  transform: translateX(-66px);
+  color: white;
+}
+/* // submit and cancel buttons */
+.submit-btn, .cancel-btn{
+    color: #fff;
+    font-size: 12px;
+    letter-spacing: 1px;
+    padding: 13px 30px 13px ;
+    border: 0px solid;
+    cursor: pointer;
+    /* position: relative; */
+    background-color: rgba(126, 228, 214, 0.3);
+  }
+  .submit-btn {
+      width: 102px;
+      margin-left: 10px;
+  }
+  .submit-btn,.cancel-btn, .submit-btn span, .cancel-btn span{
+    transition: 350ms;
+  }
+  .submit-btn .text, .cancel-btn .text{
+    transform: translateX(35px);
+    color: white;
+  }
+  .submit-btn .submit-icon, .cancel-btn .cancel-icon {
+    position: absolute;
+    padding-left: 5px;
+    transform: translateX(0px);
+  }
+  .submit-btn:hover {
+    background: rgba(49, 170, 154, 0.3);
+  }
+  .cancel-btn:hover {
+    background: rgba(49, 170, 154, 0.3);
+  }
+  .submit-btn:hover .text {
+    color: transparent;
+  }
+  .submit-btn:hover .submit-icon {
+    transform: translateX(-21px);
+    color: white;
+  }
+  .cancel-btn:hover .text {
+    color: transparent;
+  }
+  .cancel-btn:hover .cancel-icon {
+    transform: translateX(-30px);
+    color: white;
+  }
+
+/* // input */
+label {
+  font-size: 18px;
+  color: #fff;
+  padding: 0px 3px 0px 20px;
+  font-weight: 300;
+}
+input {
+  border: none;
+  border-bottom: 1.5px solid white;
+  height: 20px;
+  background-color: transparent;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 300;
+}
+input:focus {
+  outline: none;
+}
+/* // edit component */
+.edit-form {
+    padding:18px 0px;
+}
+.edit-form .submit-btn:hover .submit-icon {
+    transform: translateX(-25px);
+    color: white;
+  }
+
+/* //footer */
+
+.flex-center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.social-links {
+	display: flex;
+}
+.social-links a {
+    color: #333;
+    text-decoration: none;
+}
+.social-links a:hover {
+    text-decoration: underline ;
+}
+.social-btn {
+	cursor: pointer;
+	height: 40px;
+	width: 40px;
+	font-family: 'Titillium Web', sans-serif;
+	color: #333;
+	border-radius: 10px;
+	box-shadow: 0px 10px 10px rgba(0,0,0,0.1);
+	background: white;
+	margin: 5px;
+	transition: 1s;
+    box-sizing: border-box;
+}
+.social-btn span {
+	width: 0px;
+	overflow: hidden;
+	transition: 1s;
+	text-align: center;
+}
+.social-btn:hover {
+	width: 150px;
+	border-radius: 5px;
+}
+
+.social-btn:hover span {
+	padding: 5px;
+	width: max-content;
+}

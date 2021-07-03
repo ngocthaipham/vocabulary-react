@@ -1,5 +1,7 @@
 import Level from "./levelApi";
 import React, { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 const AddLevelForm = (props) => {
   const [idLevel, setIdLevel] = useState();
@@ -30,8 +32,18 @@ const AddLevelForm = (props) => {
   return (
     <>
       {!addState ? (
-    <button onClick={()=> {setAddState(true)}}>
-          Add a new level
+        <button
+          className="add-btn"
+          onClick={() => {
+            setAddState(true);
+          }}
+        >
+          <span className="text">
+            Add a new level
+            <span className="add-icon">
+              <FontAwesomeIcon icon={faPlus} />
+            </span>
+          </span>
         </button>
       ) : (
         <div>
@@ -42,30 +54,48 @@ const AddLevelForm = (props) => {
               addLevel();
             }}
           >
-            <label>ID</label>
+            <label>ID : </label>
             <input
               type="number"
               onChange={(e) => {
                 setIdLevel(e.target.value);
               }}
             />
-            <label>Level</label>
+            <label>Level : </label>
             <input
               type="number"
               onChange={(e) => {
                 setLevel(e.target.value);
               }}
             />
-            <label>ID Source</label>
+            <label>ID Source : </label>
             <input
               type="number"
               onChange={(e) => {
                 setIdSource(e.target.value);
               }}
             />
-            <button type="submit">Add new level</button>
-            <button onClick={()=> {setAddState(true)}} type="button">
-              Cancel
+            <button className="submit-btn" type="submit">
+              <span className="text">
+                Add
+                <span className="submit-icon">
+                  <FontAwesomeIcon icon={faCheck} />
+                </span>
+              </span>
+            </button>
+            <button
+              className="cancel-btn"
+              onClick={() => {
+                setAddState(false);
+              }}
+              type="button"
+            >
+              <span className="text">
+                Cancel
+                <span className="cancel-icon">
+                  <FontAwesomeIcon icon={faTimes} />
+                </span>
+              </span>
             </button>
           </form>
         </div>

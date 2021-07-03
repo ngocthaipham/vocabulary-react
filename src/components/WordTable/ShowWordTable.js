@@ -2,6 +2,13 @@ import React, { useState } from "react";
 import Word from ".././WordTable/wordApi";
 import AddWordForm from "./AddWordForm";
 import EditWordForm from "./EditWordForm";
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faAngleRight,
+  faPenSquare,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 const ShowWordTable = (props) => {
   const [currentWord, setCurrentWord] = useState({});
   const [isShowEditForm, setIsShowEditForm] = useState(false);
@@ -52,11 +59,11 @@ const ShowWordTable = (props) => {
   function highlight(id) {
     if (id === props.currentIdWord) {
       return {
-        backgroundColor: "pink",
+        backgroundColor: "rgba(126, 228, 214, 0.3)",
       };
     }
     return {
-      backgroundColor: "white",
+      backgroundColor: "",
     };
   }
 
@@ -83,8 +90,9 @@ const ShowWordTable = (props) => {
             currentWord={currentWord}
             currentIdWord={props.currentIdWord}
             setIdWord={setIdWord}
+            updateCurrentIdWord={props.updateCurrentIdWord}
           />
-          <table border="5" cellPadding="5">
+          <table border="0" cellPadding="0" cellSpacing="0">
             <thead>
               <tr>
                 <th>ID</th>
@@ -93,7 +101,16 @@ const ShowWordTable = (props) => {
                 <th>Meaning</th>
                 <th>Actions</th>
                 <th>
-                  <button onClick={cancel}>X</button>
+                  <Link to={`/levels/${props.currentIdLevel}`}>
+                    <button className="back-btn"
+                    onClick={cancel}>
+                    <div class="outer">
+                          <div class="inner">
+                            <label className="back-btn-content">Back</label>
+                          </div>
+                        </div>
+                      </button>
+                  </Link>
                 </th>
               </tr>
             </thead>
@@ -106,20 +123,30 @@ const ShowWordTable = (props) => {
                   <td>{word.meaning}</td>
                   <td>
                     <button
+                      className="edit-btn"
                       onClick={() => {
                         showEditForm(word.id);
                       }}
                       disabled={disableButton()}
                     >
-                      Edit
+                      <div>
+                        Edit <FontAwesomeIcon icon={faPenSquare} />
+                        <div className="circle"></div>
+                      </div>
                     </button>
                     <button
+                      className="delete-btn"
                       onClick={() => {
                         removeWord(word.id);
                       }}
                       disabled={disableButton()}
                     >
-                      Delete
+                      <span className="text">
+                        Delete
+                        <span className="trash-icon">
+                          <FontAwesomeIcon icon={faTrash} />
+                        </span>
+                      </span>
                     </button>
                   </td>
                 </tr>

@@ -1,6 +1,7 @@
 import Level from "./levelApi";
 import React, { useState } from "react";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 const EditLevelForm = (props) => {
   const [idLevel, setIdLevel] = useState();
   const [newLevel, setNewLevel] = useState("");
@@ -34,7 +35,8 @@ const EditLevelForm = (props) => {
       {!props.isShowEditForm ? (
         <p></p>
       ) : (
-        <div>
+        <div className="edit-form">
+          <h3>Edit Level</h3>
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -42,7 +44,7 @@ const EditLevelForm = (props) => {
               props.updateEditForm(false);
             }}
           >
-            <label>ID</label>
+            <label>ID : </label>
             <input
               type="number"
               defaultValue={props.currentIdLevel}
@@ -50,7 +52,7 @@ const EditLevelForm = (props) => {
                 setIdLevel(e.target.value);
               }}
             />
-            <label>New Level</label>
+            <label>New Level : </label>
             <input
               type="number"
               defaultValue={props.currentLevel.level}
@@ -58,7 +60,7 @@ const EditLevelForm = (props) => {
                 setNewLevel(e.target.value);
               }}
             />
-            <label>New ID Source</label>
+            <label>New ID Source : </label>
             <input
               type="number"
               defaultValue={props.currentLevel.idSource}
@@ -66,9 +68,22 @@ const EditLevelForm = (props) => {
                 setNewIdSource(e.target.value);
               }}
             />
-            <button type="submit">Save</button>
-            <button type="button" onClick={cancel}>
-              Cancel
+            <button className="submit-btn" type="submit">
+            <span className="text">
+                          Save
+                          <span className="submit-icon">
+                            <FontAwesomeIcon icon={faCheck} />
+                          </span>
+                        </span>
+            </button>
+            <button className="cancel-btn"
+            type="button" onClick={cancel}>
+            <span className="text">
+                          Cancel
+                          <span className="cancel-icon">
+                            <FontAwesomeIcon icon={faTimes} />
+                          </span>
+                        </span>
             </button>
           </form>
         </div>

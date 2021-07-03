@@ -2,6 +2,13 @@ import React, { useState } from "react";
 import Level from "./levelApi";
 import AddLevelForm from "./AddLevelForm";
 import EditLevelForm from "./EditLevelForm";
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faAngleRight,
+  faPenSquare,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 
 const ShowLevelTable = (props) => {
   const [isShowEditForm, setIsShowEditForm] = useState(false);
@@ -65,11 +72,11 @@ const ShowLevelTable = (props) => {
   function highlight(id) {
     if (id === props.currentIdLevel) {
       return {
-        backgroundColor: "pink",
+        backgroundColor: "rgba(126, 228, 214, 0.3)",
       };
     }
     return {
-      backgroundColor: "white",
+      backgroundColor: "",
     };
   }
 
@@ -98,7 +105,7 @@ const ShowLevelTable = (props) => {
             currentIdCourse={props.currentIdCourse}
           />
           <div>
-            <table border="5" cellPadding="5">
+            <table border="0" cellPadding="0" cellSpacing="0">
               <thead>
                 <tr>
                   <th>ID</th>
@@ -106,7 +113,15 @@ const ShowLevelTable = (props) => {
                   <th>ID Source</th>
                   <th>Actions</th>
                   <th>
-                    <button onClick={cancel}>X</button>
+                    <Link to={"/"}>
+                      <button className="back-btn" onClick={cancel}>
+                        <div class="outer">
+                          <div class="inner">
+                            <label className="back-btn-content">Back</label>
+                          </div>
+                        </div>
+                      </button>
+                    </Link>
                   </th>
                 </tr>
               </thead>
@@ -117,29 +132,44 @@ const ShowLevelTable = (props) => {
                     <td>{level.level}</td>
                     <td>{level.idSource}</td>
                     <td>
+                      <Link to={`/words/${level.idLevel}`}>
+                        <button
+                          className="view-btn"
+                          onClick={() => {
+                            showWord(level.idLevel);
+                          }}
+                          disabled={disableButton()}
+                        >
+                          <div>
+                            View <FontAwesomeIcon icon={faAngleRight} />
+                          </div>
+                        </button>
+                      </Link>
                       <button
-                        onClick={() => {
-                          showWord(level.idLevel);
-                        }}
-                        disabled={disableButton()}
-                      >
-                        View
-                      </button>
-                      <button
+                        className="edit-btn"
                         disabled={disableButton()}
                         onClick={() => {
                           showEditForm(level.idLevel);
                         }}
                       >
-                        Edit
+                        <div>
+                          Edit <FontAwesomeIcon icon={faPenSquare} />
+                          <div className="circle"></div>
+                        </div>
                       </button>
                       <button
+                        className="delete-btn"
                         disabled={disableButton()}
                         onClick={() => {
                           removeLevel(level.idLevel);
                         }}
                       >
-                        Delete
+                        <span className="text">
+                          Delete
+                          <span className="trash-icon">
+                            <FontAwesomeIcon icon={faTrash} />
+                          </span>
+                        </span>
                       </button>
                     </td>
                   </tr>

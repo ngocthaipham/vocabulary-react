@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import Word from "./wordApi";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 const AddWordFrom = (props) => {
   const [id, setId] = useState();
   const [vocab, setVocab] = useState("");
@@ -31,11 +33,17 @@ const AddWordFrom = (props) => {
     <>
       {!addState ? (
         <button
+          className="add-btn"
           onClick={() => {
             setAddState(true);
           }}
         >
-          Add a new word
+          <span className="text">
+            Add a new word
+            <span className="add-icon">
+              <FontAwesomeIcon icon={faPlus} />
+            </span>
+          </span>
         </button>
       ) : (
         <div>
@@ -46,42 +54,55 @@ const AddWordFrom = (props) => {
               addWord();
             }}
           >
-            <label>ID</label>
+            <label>ID : </label>
             <input
               type="number"
               onChange={(e) => {
                 setId(e.target.value);
               }}
             />
-            <label>ID Level</label>
+            <label>ID Level : </label>
             <input
               type="number"
               onChange={(e) => {
                 setIdLevel(e.target.value);
               }}
             />
-            <label>Word</label>
+            <label>Word : </label>
             <input
               type="text"
               onChange={(e) => {
                 setVocab(e.target.value);
               }}
             />
-            <label>Meaning</label>
+            <label>Meaning : </label>
             <input
               type="text"
               onChange={(e) => {
                 setMeaning(e.target.value);
               }}
             />
-            <button type="submit">Add new vocab</button>
+            <button className="submit-btn" type="submit">
+              <span className="text">
+                Add
+                <span className="submit-icon">
+                  <FontAwesomeIcon icon={faCheck} />
+                </span>
+              </span>
+            </button>
             <button
+              className="cancel-btn"
               onClick={() => {
                 setAddState(false);
               }}
               type="button"
             >
-              Cancel
+              <span className="text">
+                Cancel
+                <span className="cancel-icon">
+                  <FontAwesomeIcon icon={faTimes} />
+                </span>
+              </span>
             </button>
           </form>
         </div>
