@@ -1,184 +1,121 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Level from "./levelApi";
-import AddLevelForm from "./AddLevelForm";
-import EditLevelForm from "./EditLevelForm";
 import { Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleRight,
   faPenSquare,
   faTrash,
+  faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 
 const ShowLevelTable = (props) => {
-  const [isShowEditForm, setIsShowEditForm] = useState(false);
-  const [currentLevel, setCurrentLevel] = useState({});
+  const [levelList, setLevelList] = useState([]);
 
-  const reRender = (response) => {
-    props.updateLevelList(response);
-  };
+  const { id } = useParams();
 
-  const renderWordList = (response) => {
-    props.updateWordList(response);
-  };
-
-  const showEditForm = (id) => {
-    for (let i = 0; i < props.levelList.length; i++) {
-      if (id === props.levelList[i].idLevel) {
-        setCurrentLevel(props.levelList[i]);
-      }
-    }
-    props.updateCurrentIdLevel(id);
-    setIsShowEditForm(true);
-  };
-
-  const setId = (res) => {
-    props.updateCurrentIdLevel(res);
-  };
-
-  const updateEditForm = (res) => {
-    setIsShowEditForm(res);
-  };
-
-  function disableButton() {
-    if (!isShowEditForm) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  const renderAfterRemove = () => {
-    Level.getLevelTable(props.currentIdCourse).then((response) => {
-      reRender(response.data);
-    });
-  };
+  useEffect(
+    () =>
+      Level.getLevelTable(id).then((response) => {
+        setLevelList(response.data);
+      }),
+    []
+  );
 
   const removeLevel = (id) => {
-    Level.deleteLevel(id).then(() => {
+    Level.deleteLevel(id).then((response) => {
       alert("remove success");
-      renderAfterRemove();
+      setLevelList(response.data);
     });
   };
 
   const showWord = (id) => {
-    props.showWordList(true);
     props.updateCurrentIdLevel(id);
-    Level.getWordTable(id).then((response) => {
-      renderWordList(response.data);
-    });
   };
-
-  function highlight(id) {
-    if (id === props.currentIdLevel) {
-      return {
-        backgroundColor: "rgba(126, 228, 214, 0.3)",
-      };
-    }
-    return {
-      backgroundColor: "",
-    };
-  }
-
-  function cancel() {
-    props.showLevelList(false);
-    props.updateCurrentIdCourse(0);
-  }
 
   return (
     <>
-      {!props.isShowLevelList ? (
-        <p></p>
-      ) : (
+      <Link to={`/levels/${props.currentIdCourse}/addlevel`}>
+        <button className="add-btn">
+          <span className="text">Add a new level</span>
+          <span className="add-icon">
+            <FontAwesomeIcon icon={faPlus} />
+          </span>
+        </button>
+      </Link>
+
+      <div>
         <div>
-          <AddLevelForm
-            reRender={reRender}
-            currentIdCourse={props.currentIdCourse}
-          />
-          <EditLevelForm
-            setId={setId}
-            isShowEditForm={isShowEditForm}
-            updateEditForm={updateEditForm}
-            currentLevel={currentLevel}
-            reRender={reRender}
-            currentIdLevel={props.currentIdLevel}
-            currentIdCourse={props.currentIdCourse}
-          />
-          <div>
-            <table border="0" cellPadding="0" cellSpacing="0">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Level</th>
-                  <th>ID Source</th>
-                  <th>Actions</th>
-                  <th>
-                    <Link to={"/"}>
-                      <button className="back-btn" onClick={cancel}>
-                        <div class="outer">
-                          <div class="inner">
-                            <label className="back-btn-content">Back</label>
-                          </div>
+          <table border="0" cellPadding="0" cellSpacing="0">
+            <thead className="header">
+              <tr>
+                <th>ID</th>
+                <th>Level</th>
+                <th>ID Source</th>
+                <th>Actions</th>
+                <th>
+                  <Link to={"/"}>
+                    <button className="back-btn">
+                      <div className="outer">
+                        <div className="inner">
+                          <label className="back-btn-content">Back</label>
+                        </div>
+                      </div>
+                    </button>
+                  </Link>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {levelList.map((level) => (
+                <tr key={level.idLevel}>
+                  <td>{level.idLevel}</td>
+                  <td>{level.level}</td>
+                  <td>{level.idSource}</td>
+                  <td>
+                    <Link to={`/words/${level.idLevel}`}>
+                      <button
+                        className="view-btn"
+                        onClick={() => {
+                          showWord(level.idLevel);
+                        }}
+                      >
+                        <div>
+                          View <FontAwesomeIcon icon={faAngleRight} />
                         </div>
                       </button>
                     </Link>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {props.levelList.map((level) => (
-                  <tr key={level.idLevel} style={highlight(level.idLevel)}>
-                    <td>{level.idLevel}</td>
-                    <td>{level.level}</td>
-                    <td>{level.idSource}</td>
-                    <td>
-                      <Link to={`/words/${level.idLevel}`}>
-                        <button
-                          className="view-btn"
-                          onClick={() => {
-                            showWord(level.idLevel);
-                          }}
-                          disabled={disableButton()}
-                        >
-                          <div>
-                            View <FontAwesomeIcon icon={faAngleRight} />
-                          </div>
-                        </button>
-                      </Link>
-                      <button
-                        className="edit-btn"
-                        disabled={disableButton()}
-                        onClick={() => {
-                          showEditForm(level.idLevel);
-                        }}
-                      >
+                    <Link
+                      to={`/levels/${props.currentIdCourse}/editlevel/${level.idLevel}/${level.level}/${level.idSource}`}
+                    >
+                      <button className="edit-btn">
                         <div>
                           Edit <FontAwesomeIcon icon={faPenSquare} />
                           <div className="circle"></div>
                         </div>
                       </button>
-                      <button
-                        className="delete-btn"
-                        disabled={disableButton()}
-                        onClick={() => {
-                          removeLevel(level.idLevel);
-                        }}
-                      >
-                        <span className="text">
-                          Delete
-                          <span className="trash-icon">
-                            <FontAwesomeIcon icon={faTrash} />
-                          </span>
+                    </Link>
+                    <button
+                      className="delete-btn"
+                      onClick={() => {
+                        removeLevel(level.idLevel);
+                      }}
+                    >
+                      <span className="text">
+                        Delete
+                        <span className="trash-icon">
+                          <FontAwesomeIcon icon={faTrash} />
                         </span>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                      </span>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      )}
+      </div>
     </>
   );
 };

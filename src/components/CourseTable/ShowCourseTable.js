@@ -1,51 +1,24 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import Course from "./courseApi";
-import AddCourseForm from "./AddCourseForm";
-import EditCourseForm from "./EditCourseForm";
 import { Link } from "react-router-dom";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleRight,
   faPenSquare,
   faTrash,
+  faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 const ShowCourseTable = (props) => {
   const [coursesList, setCourseList] = useState([]);
-  const [isShowEditForm, setIsShowEditForm] = useState(false);
-  const [currentCourse, setCurrentCourse] = useState({});
-
+ 
   useEffect(() => {
     Axios.get("http://localhost:5000/sources").then((response) => {
       setCourseList(response.data);
     });
   }, []);
 
-  const reRender = (response) => {
-    setCourseList(response);
-  };
-  const renderLevelList = (res) => {
-    props.updateLevelList(res);
-  };
-
-  const renderEdit = (res) => {
-    setIsShowEditForm(res);
-  };
-
-  const setId = (res) => {
-    props.updateCurrentIdCourse(res);
-  };
-  const showEditForm = (id) => {
-    for (let i = 0; i < coursesList.length; i++) {
-      if (id === coursesList[i].idSource) {
-        setCurrentCourse(coursesList[i]);
-      }
-    }
-    setIsShowEditForm(true);
-    props.updateCurrentIdCourse(id);
-  };
-
+  
   const removeCourse = (id) => {
     Course.deleteCourse(id).then((response) => {
       alert("remove success");
@@ -53,50 +26,22 @@ const ShowCourseTable = (props) => {
     });
   };
 
-  function disableButton() {
-    if (!isShowEditForm) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
   const showLevel = (id) => {
-    props.showLevelList(true);
     props.updateCurrentIdCourse(id);
-    Course.getLevelTable(id).then((response) => {
-      renderLevelList(response.data);
-    });
   };
 
-  function highlight(id) {
-    if (id === props.currentIdCourse) {
-      return {
-        backgroundColor: "rgba(126, 228, 214, 0.3)",
-      };
-    }
-    return {
-      backgroundColor: "",
-    };
-  }
 
   return (
     <>
-      {/* <Switch>
-        <Route exact path="/addcourse"> */}
-          <AddCourseForm reRender={reRender} />
-        {/* </Route>
-        <Route exact path="/editcourse/:id"> */}
-          <EditCourseForm
-            isShowEditForm={isShowEditForm}
-            renderEdit={renderEdit}
-            currentIdCourse={props.currentIdCourse}
-            reRender={reRender}
-            currentCourse={currentCourse}
-            setId={setId}
-          />
-        {/* </Route>
-      </Switch> */}
+      <Link to={"/addcourse"}>
+        <button className="add-btn">
+          <span className="text">Add a new course</span>
+          <span className="add-icon">
+            <FontAwesomeIcon icon={faPlus} />
+          </span>
+        </button>
+      </Link>
+
       <div>
         <table border="0" cellPadding="0" cellSpacing="0">
           <thead className="header">
@@ -109,7 +54,7 @@ const ShowCourseTable = (props) => {
           </thead>
           <tbody className="content">
             {coursesList.map((course) => (
-              <tr key={course.idSource} style={highlight(course.idSource)}>
+              <tr key={course.idSource} >
                 <td>{course.idSource}</td>
                 <td>{course.nameSource}</td>
                 <td>{course.desSource}</td>
@@ -117,7 +62,6 @@ const ShowCourseTable = (props) => {
                   <Link to={`/levels/${course.idSource}`}>
                     <button
                       className="view-btn"
-                      disabled={disableButton()}
                       onClick={() => {
                         showLevel(course.idSource);
                       }}
@@ -127,29 +71,25 @@ const ShowCourseTable = (props) => {
                       </div>
                     </button>
                   </Link>
-                  {/* <Link to={`/editcourse/${course.idSource}`}> */}
+                  <Link to={`/editcourse/${course.idSource}/${course.nameSource}/${course.desSource}`} >
                     <button
                       className="edit-btn"
-                      disabled={disableButton()}
-                      onClick={() => {
-                        showEditForm(course.idSource);
-                      }}
                     >
                       <div>
                         Edit <FontAwesomeIcon icon={faPenSquare} />
                         <div className="circle"></div>
                       </div>
                     </button>
-                  {/* </Link> */}
+                  </Link>
                   <button
                     className="delete-btn"
-                    disabled={disableButton()}
                     onClick={() => {
                       removeCourse(course.idSource);
                     }}
                   >
-                    <span className='text'>
-                      Delete<span className="trash-icon">
+                    <span className="text">
+                      Delete
+                      <span className="trash-icon">
                         <FontAwesomeIcon icon={faTrash} />
                       </span>
                     </span>

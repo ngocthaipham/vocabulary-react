@@ -3,6 +3,12 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import ShowCourseTable from "./components/CourseTable/ShowCourseTable";
 import ShowLevelTable from "./components/LevelTable/ShowLevelTable";
 import ShowWordTable from "./components/WordTable/ShowWordTable";
+import AddCourseForm from "./components/CourseTable/AddCourseForm";
+import AddLevelForm from "./components/LevelTable/AddLevelForm";
+import AddWordForm from "./components/WordTable/AddWordForm";
+import EditCourseForm from "./components/CourseTable/EditCourseForm";
+import EditLevelForm from "./components/LevelTable/EditLevelForm";
+import EditWordForm from "./components/WordTable/EditWordForm";
 import "./App.css";
 import Logo from "./asserts/Logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,13 +18,8 @@ import {
   faGithub,
 } from "@fortawesome/free-brands-svg-icons";
 function App() {
-  const [levelList, setLevelList] = useState([]);
-  const [wordList, setWordList] = useState([]);
-  const [isShowLevelList, setIsShowLevelList] = useState(false);
-  const [isShowWordList, setIsShowWordList] = useState(false);
   const [currentIdCourse, setCurrentIdCourse] = useState();
   const [currentIdLevel, setCurrentIdLevel] = useState();
-  const [currentIdWord, setCurrentIdWord] = useState();
 
   const updateCurrentIdCourse = (res) => {
     setCurrentIdCourse(res);
@@ -26,25 +27,6 @@ function App() {
 
   const updateCurrentIdLevel = (res) => {
     setCurrentIdLevel(res);
-  };
-
-  const updateCurrentIdWord = (res) => {
-    setCurrentIdWord(res);
-  };
-
-  const updateLevelList = (response) => {
-    setLevelList(response);
-  };
-  const updateWordList = (response) => {
-    setWordList(response);
-  };
-
-  const showLevelList = (res) => {
-    setIsShowLevelList(res);
-  };
-
-  const showWordList = (res) => {
-    setIsShowWordList(res);
   };
 
   return (
@@ -58,44 +40,41 @@ function App() {
           <Switch>
             <Route exact path="/">
               <ShowCourseTable
-                updateLevelList={updateLevelList}
-                isShowLevelList={isShowLevelList}
-                showLevelList={showLevelList}
                 currentIdCourse={currentIdCourse}
                 updateCurrentIdCourse={updateCurrentIdCourse}
               />
             </Route>
-            {/* <Route exact path='/addcourse'>
-      <AddCourseForm />
-      </Route> */}
-            {/* <Route exact path='/editcourse'>
-        <EditCourseForm />
-      </Route> */}
+            <Route exact path="/addcourse">
+              <AddCourseForm />
+            </Route>
+            <Route exact path="/editcourse/:idSource/:nameSource/:desSource">
+              <EditCourseForm />
+            </Route>
             <Route exact path="/levels/:id">
               <ShowLevelTable
-                isShowLevelList={isShowLevelList}
-                showLevelList={showLevelList}
-                levelList={levelList}
-                updateLevelList={updateLevelList}
-                updateCurrentIdLevel={updateCurrentIdLevel}
-                currentIdLevel={currentIdLevel}
                 currentIdCourse={currentIdCourse}
-                updateCurrentIdCourse={updateCurrentIdCourse}
-                updateWordList={updateWordList}
-                showWordList={showWordList}
+                updateCurrentIdLevel={updateCurrentIdLevel}
               />
+            </Route>
+            <Route exact path="/levels/:id/addlevel">
+              <AddLevelForm currentIdCourse={currentIdCourse} />
+            </Route>
+            <Route exact path="/levels/:id/editlevel/:idLevel/:level/:idSource">
+              <EditLevelForm currentIdCourse={currentIdCourse} />
             </Route>
             <Route exact path="/words/:id">
               <ShowWordTable
-                isShowWordList={isShowWordList}
                 currentIdLevel={currentIdLevel}
-                wordList={wordList}
-                updateWordList={updateWordList}
-                updateCurrentIdWord={updateCurrentIdWord}
-                currentIdWord={currentIdWord}
-                showWordList={showWordList}
-                updateCurrentIdLevel={updateCurrentIdLevel}
               />
+            </Route>
+            <Route exact path="/words/:id/addword">
+              <AddWordForm currentIdLevel={currentIdLevel} />
+            </Route>
+            <Route
+              exact
+              path="/words/:id/editword/:id/:idLevel/:vocab/:meaning"
+            >
+              <EditWordForm currentIdLevel={currentIdLevel} />
             </Route>
           </Switch>
         </div>
@@ -104,8 +83,8 @@ function App() {
         &copy; 2021 | <span>❤️ &nbsp;</span>
         <a href="https://github.com/ngocthaipham">Ngoc Thai</a>
       </div>
-      <div class="social-links">
-        <div class="social-btn flex-center" id="facebook">
+      <div className="social-links">
+        <div className="social-btn flex-center" id="facebook">
           <svg width="24" height="24" viewBox="0 0 24 24">
             <FontAwesomeIcon icon={faFacebook} />
           </svg>
@@ -113,7 +92,7 @@ function App() {
             <a href="https://www.facebook.com/marbiosgod/">NgocThai</a>
           </span>
         </div>
-        <div class="social-btn flex-center" id="instagram">
+        <div className="social-btn flex-center" id="instagram">
           <svg width="24" height="24" viewBox="0 0 24 24">
             <FontAwesomeIcon icon={faInstagram} />
           </svg>
@@ -121,7 +100,7 @@ function App() {
             <a href="https://www.instagram.com/pnthaiiii_/">@pnthaiiii_</a>
           </span>
         </div>
-        <div class="social-btn flex-center" id="github">
+        <div className="social-btn flex-center" id="github">
           <svg width="24" height="24" viewBox="0 0 24 24">
             <FontAwesomeIcon icon={faGithub} />
           </svg>

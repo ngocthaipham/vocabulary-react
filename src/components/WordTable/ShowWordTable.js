@@ -1,160 +1,106 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Word from ".././WordTable/wordApi";
-import AddWordForm from "./AddWordForm";
-import EditWordForm from "./EditWordForm";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useParams } from "react-router-dom";
 import {
-  faAngleRight,
+  faPlus,
   faPenSquare,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 const ShowWordTable = (props) => {
-  const [currentWord, setCurrentWord] = useState({});
-  const [isShowEditForm, setIsShowEditForm] = useState(false);
+  const [wordList, setWordList] = useState([]);
+  const { id } = useParams();
 
-  const reRender = (response) => {
-    props.updateWordList(response);
-  };
-
-  const showEditForm = (id) => {
-    for (let i = 0; i < props.wordList.length; i++) {
-      if (id === props.wordList[i].id) {
-        setCurrentWord(props.wordList[i]);
-      }
-    }
-    props.updateCurrentIdWord(id);
-    setIsShowEditForm(true);
-  };
-
-  function disableButton() {
-    if (!isShowEditForm) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  const setIdWord = (res) => {
-    props.updateCurrentIdWord(res);
-  };
-
-  const updateEditForm = (res) => {
-    setIsShowEditForm(res);
-  };
-
+  useEffect(
+    () =>
+      Word.getWordTable(id).then((response) => {
+        setWordList(response.data);
+      }),
+    []
+  );
   const removeWord = (id) => {
-    Word.deleteWord(id).then(() => {
+    Word.deleteWord(id).then((response) => {
       alert("remove success");
-      renderAfterRemove();
+      setWordList(response.data);
     });
   };
 
-  const renderAfterRemove = () => {
-    Word.getWordTable(props.currentIdLevel).then((response) => {
-      reRender(response.data);
-    });
-  };
-
-  function highlight(id) {
-    if (id === props.currentIdWord) {
-      return {
-        backgroundColor: "rgba(126, 228, 214, 0.3)",
-      };
-    }
-    return {
-      backgroundColor: "",
-    };
-  }
-
-  function cancel() {
-    props.showWordList(false);
-    props.updateCurrentIdLevel(0);
-  }
+  // const renderAfterRemove = () => {
+  //   Word.getWordTable(props.currentIdLevel).then((response) => {
+  //     reRender(response.data);
+  //   });
+  // };
 
   return (
     <>
-      {!props.isShowWordList ? (
-        <p></p>
-      ) : (
-        <div>
-          <AddWordForm
-            reRender={reRender}
-            currentIdLevel={props.currentIdLevel}
-          />
-          <EditWordForm
-            isShowEditForm={isShowEditForm}
-            reRender={reRender}
-            updateEditForm={updateEditForm}
-            currentIdLevel={props.currentIdLevel}
-            currentWord={currentWord}
-            currentIdWord={props.currentIdWord}
-            setIdWord={setIdWord}
-            updateCurrentIdWord={props.updateCurrentIdWord}
-          />
-          <table border="0" cellPadding="0" cellSpacing="0">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>ID Level</th>
-                <th>Word</th>
-                <th>Meaning</th>
-                <th>Actions</th>
-                <th>
-                  <Link to={`/levels/${props.currentIdLevel}`}>
-                    <button className="back-btn"
-                    onClick={cancel}>
+      <Link to={`/words/${props.currentIdLevel}/addword`}>
+        <button className="add-btn">
+          <span className="text">Add a new level</span>
+          <span className="add-icon">
+            <FontAwesomeIcon icon={faPlus} />
+          </span>
+        </button>
+      </Link>
+      <div>
+        <table border="0" cellPadding="0" cellSpacing="0">
+          <thead className="header">
+            <tr>
+              <th>ID</th>
+              <th>ID Level</th>
+              <th>Word</th>
+              <th>Meaning</th>
+              <th>Actions</th>
+              <th>
+                <Link to={`/levels/${props.currentIdLevel}`}>
+                  <button className="back-btn">
                     <div class="outer">
-                          <div class="inner">
-                            <label className="back-btn-content">Back</label>
-                          </div>
-                        </div>
-                      </button>
-                  </Link>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {props.wordList.map((word) => (
-                <tr key={word.id} style={highlight(word.id)}>
-                  <td>{word.id}</td>
-                  <td>{word.idLevel}</td>
-                  <td>{word.vocab}</td>
-                  <td>{word.meaning}</td>
-                  <td>
-                    <button
-                      className="edit-btn"
-                      onClick={() => {
-                        showEditForm(word.id);
-                      }}
-                      disabled={disableButton()}
-                    >
+                      <div class="inner">
+                        <label className="back-btn-content">Back</label>
+                      </div>
+                    </div>
+                  </button>
+                </Link>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {wordList.map((word) => (
+              <tr key={word.id}>
+                <td>{word.id}</td>
+                <td>{word.idLevel}</td>
+                <td>{word.vocab}</td>
+                <td>{word.meaning}</td>
+                <td>
+                  <Link
+                    to={`/words/${props.currentIdLevel}/editword/${word.id}/${word.idLevel}/${word.vocab}/${word.meaning}`}
+                  >
+                    <button className="edit-btn">
                       <div>
                         Edit <FontAwesomeIcon icon={faPenSquare} />
                         <div className="circle"></div>
                       </div>
                     </button>
-                    <button
-                      className="delete-btn"
-                      onClick={() => {
-                        removeWord(word.id);
-                      }}
-                      disabled={disableButton()}
-                    >
-                      <span className="text">
-                        Delete
-                        <span className="trash-icon">
-                          <FontAwesomeIcon icon={faTrash} />
-                        </span>
+                  </Link>
+                  <button
+                    className="delete-btn"
+                    onClick={() => {
+                      removeWord(word.id);
+                    }}
+                  >
+                    <span className="text">
+                      Delete
+                      <span className="trash-icon">
+                        <FontAwesomeIcon icon={faTrash} />
                       </span>
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+                    </span>
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </>
   );
 };
