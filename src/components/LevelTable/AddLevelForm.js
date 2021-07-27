@@ -2,25 +2,24 @@ import Level from "./levelApi";
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
-const AddLevelForm = (props) => {
-  const [idLevel, setIdLevel] = useState();
+const AddLevelForm = () => {
   const [level, setLevel] = useState("");
-  const [idSource, setIdSource] = useState("");
+  const [fileSelected, setFileSelected] = useState();
+
+  const { userName, idSource } = useParams();
 
   let history = useHistory();
 
   const addLevel = () => {
-    var data = {
-      idLevel: idLevel,
-      level: level,
-      idSource: idSource,
-    };
-
+    var data = new FormData();
+    data.append("level", level);
+    data.append("idSource", idSource);
+    data.append("imageLevel", fileSelected);
     Level.addLevel(data).then((response) => {
       alert(response.data);
-      history.push(`/levels/${props.currentIdCourse}`);
+      history.push(`/${userName}/levels/${idSource}`);
     });
   };
 
@@ -33,14 +32,8 @@ const AddLevelForm = (props) => {
             e.preventDefault();
             addLevel();
           }}
+          encType="multipart/form-data"
         >
-          <label>ID : </label>
-          <input
-            type="number"
-            onChange={(e) => {
-              setIdLevel(e.target.value);
-            }}
-          />
           <label>Level : </label>
           <input
             type="number"
@@ -48,13 +41,15 @@ const AddLevelForm = (props) => {
               setLevel(e.target.value);
             }}
           />
-          <label>ID Source : </label>
+          <label for="imageLevel">Select a file</label>
           <input
-            type="number"
+            type="file"
+            name="imageLevel"
             onChange={(e) => {
-              setIdSource(e.target.value);
+              setFileSelected(e.target.files[0]);
             }}
           />
+
           <button className="submit-btn" type="submit">
             <span className="text">
               Add
@@ -66,7 +61,7 @@ const AddLevelForm = (props) => {
           <button
             className="cancel-btn"
             onClick={() => {
-              history.push(`/levels/${props.currentIdCourse}`);
+              history.push(`/${userName}/levels/${idSource}`);
             }}
             type="button"
           >

@@ -4,24 +4,22 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useHistory, useParams } from "react-router-dom";
 
-const EditLevelForm = (props) => {
-  const [newIdLevel, setNewIdLevel] = useState();
+const EditLevelForm = () => {
   const [newLevel, setNewLevel] = useState("");
-  const [newIdSource, setNewIdSource] = useState("");
-
-  const { idLevel, level, idSource } = useParams();
+  const [newFileSelected, setNewFileSelected] = useState();
+  const { userName, idSource, idLevel, level } = useParams();
 
   let history = useHistory();
 
   const updateLevel = (id) => {
-    var data = {
-      level: newLevel,
-      idSource: newIdSource,
-    };
+    var data = new FormData();
+    data.append("level", newLevel);
+    data.append("idSource", idSource);
+    data.append("imageLevel", newFileSelected);
 
     Level.editLevel(id, data).then((response) => {
       alert(response.data);
-      history.push(`/levels/${props.currentIdCourse}`);
+      history.push(`/${userName}/levels/${idSource}`);
     });
   };
 
@@ -29,20 +27,14 @@ const EditLevelForm = (props) => {
     <>
       <div className="edit-form">
         <h3>Edit Level</h3>
+
         <form
           onSubmit={(e) => {
             e.preventDefault();
             updateLevel(idLevel);
           }}
+          encType="multipart/form-data"
         >
-          <label>ID : </label>
-          <input
-            type="number"
-            defaultValue={idLevel}
-            onChange={(e) => {
-              setNewIdLevel(e.target.value);
-            }}
-          />
           <label>New Level : </label>
           <input
             type="number"
@@ -51,14 +43,15 @@ const EditLevelForm = (props) => {
               setNewLevel(e.target.value);
             }}
           />
-          <label>New ID Source : </label>
+          <label for="imageLevel">Select a file</label>
           <input
-            type="number"
-            defaultValue={idSource}
+            type="file"
+            name="imageLevel"
             onChange={(e) => {
-              setNewIdSource(e.target.value);
+              setNewFileSelected(e.target.files[0]);
             }}
           />
+
           <button className="submit-btn" type="submit">
             <span className="text">
               Save
@@ -71,7 +64,7 @@ const EditLevelForm = (props) => {
             className="cancel-btn"
             type="button"
             onClick={() => {
-              history.push(`/levels/${props.currentIdCourse}`);
+              history.push(`/${userName}/levels/${idSource}`);
             }}
           >
             <span className="text">

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Welcome from "./components/Welcome"
 import ShowCourseTable from "./components/CourseTable/ShowCourseTable";
 import ShowLevelTable from "./components/LevelTable/ShowLevelTable";
 import ShowWordTable from "./components/WordTable/ShowWordTable";
@@ -9,6 +10,8 @@ import AddWordForm from "./components/WordTable/AddWordForm";
 import EditCourseForm from "./components/CourseTable/EditCourseForm";
 import EditLevelForm from "./components/LevelTable/EditLevelForm";
 import EditWordForm from "./components/WordTable/EditWordForm";
+import Login from "./components/Login/Login"
+import SignUp from "./components/Login/SignUp"
 import "./App.css";
 import Logo from "./asserts/Logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,6 +23,7 @@ import {
 function App() {
   const [currentIdCourse, setCurrentIdCourse] = useState();
   const [currentIdLevel, setCurrentIdLevel] = useState();
+
 
   const updateCurrentIdCourse = (res) => {
     setCurrentIdCourse(res);
@@ -39,42 +43,52 @@ function App() {
           <h1>English Course</h1>
           <Switch>
             <Route exact path="/">
+              <Welcome  />
+            </Route>
+            <Route exact path="/:userName">
               <ShowCourseTable
                 currentIdCourse={currentIdCourse}
                 updateCurrentIdCourse={updateCurrentIdCourse}
               />
             </Route>
-            <Route exact path="/addcourse">
+            <Route exact path="/:userName/addcourse">
               <AddCourseForm />
             </Route>
-            <Route exact path="/editcourse/:idSource/:nameSource/:desSource">
+            <Route exact path="/:userName/editcourse/:idSource/:nameSource/:desSource">
               <EditCourseForm />
             </Route>
-            <Route exact path="/levels/:id">
+            <Route exact path="/:userName/levels/:idSource">
               <ShowLevelTable
                 currentIdCourse={currentIdCourse}
                 updateCurrentIdLevel={updateCurrentIdLevel}
               />
             </Route>
-            <Route exact path="/levels/:id/addlevel">
+            <Route exact path="/:userName/levels/:idSource/addlevel">
               <AddLevelForm currentIdCourse={currentIdCourse} />
             </Route>
-            <Route exact path="/levels/:id/editlevel/:idLevel/:level/:idSource">
+            <Route exact path="/:userName/levels/:idSource/editlevel/:idLevel/:level">
               <EditLevelForm currentIdCourse={currentIdCourse} />
             </Route>
-            <Route exact path="/words/:id">
+            <Route exact path="/:userName/level/:idSource/words/:idLevel">
               <ShowWordTable
                 currentIdLevel={currentIdLevel}
+                currentIdCourse={currentIdCourse}
               />
             </Route>
-            <Route exact path="/words/:id/addword">
+            <Route exact path="/:userName/level/:idSource/words/:idLevel/addword">
               <AddWordForm currentIdLevel={currentIdLevel} />
             </Route>
             <Route
               exact
-              path="/words/:id/editword/:id/:idLevel/:vocab/:meaning"
+              path="/:userName/level/:idSource/words/:idLevel/editword/:id/:vocab/:meaning"
             >
               <EditWordForm currentIdLevel={currentIdLevel} />
+            </Route>
+            <Route exact path="/account/login">
+              <Login  />
+            </Route>
+            <Route exact path="/account/signup">
+              <SignUp />
             </Route>
           </Switch>
         </div>

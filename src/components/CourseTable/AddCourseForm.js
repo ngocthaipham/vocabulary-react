@@ -2,22 +2,23 @@ import React, { useState } from "react";
 import Course from "./courseApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 const AddCourseForm = () => {
-  const [idSource, setIdSource] = useState();
   const [nameSource, setNameSource] = useState("");
   const [desSource, setDesSource] = useState("");
-  let history = useHistory();
+  const [fileSelected, setFileSelected] = useState();
 
+  let history = useHistory();
+  const { userName } = useParams();
   const addCourse = () => {
-    var data = {
-      idSource: idSource,
-      nameSource: nameSource,
-      desSource: desSource,
-    };
+    var data = new FormData();
+    data.append("nameSource", nameSource);
+    data.append("desSource", desSource);
+    data.append("userName", userName);
+    data.append("imageSource", fileSelected);
     Course.addCourse(data).then((response) => {
       alert(response.data);
-      history.push("/");
+      history.push(`/${userName}`);
     });
   };
 
@@ -31,14 +32,8 @@ const AddCourseForm = () => {
               e.preventDefault();
               addCourse();
             }}
+            encType="multipart/form-data"
           >
-            <label>ID : </label>
-            <input
-              type="number"
-              onChange={(e) => {
-                setIdSource(e.target.value);
-              }}
-            />
             <label>Name Source : </label>
             <input
               type="text"
@@ -53,6 +48,14 @@ const AddCourseForm = () => {
                 setDesSource(e.target.value);
               }}
             />
+            <label for="image">Select a file</label>
+            <input
+              type="file"
+              name="image"
+              onChange={(e) => {
+                setFileSelected(e.target.files[0]);
+              }}
+            />
             <button className="submit-btn" type="submit">
               <span className="text">
                 Add
@@ -64,7 +67,7 @@ const AddCourseForm = () => {
             <button
               className="cancel-btn"
               onClick={() => {
-                history.push("/");
+                history.push(`/${userName}`);
               }}
             >
               <span className="text">

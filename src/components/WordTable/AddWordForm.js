@@ -2,26 +2,28 @@ import React, { useState } from "react";
 import Word from "./wordApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 const AddWordFrom = (props) => {
-  const [id, setId] = useState();
   const [vocab, setVocab] = useState("");
   const [meaning, setMeaning] = useState("");
-  const [idLevel, setIdLevel] = useState();
+  const [fileSelected, setFileSelected] = useState();
+  const [audioSelected, setAudioSelected] = useState();
+
+  const { userName, idSource, idLevel } = useParams();
 
   let history = useHistory();
 
   const addWord = () => {
-    var data = {
-      id: id,
-      idLevel: idLevel,
-      vocab: vocab,
-      meaning: meaning,
-    };
+    var data = new FormData();
+    data.append("idLevel", idLevel);
+    data.append("vocab", vocab);
+    data.append("meaning", meaning);
+    data.append("imageWord", fileSelected);
+    data.append("audioWord", audioSelected);
     Word.addWord(data).then((response) => {
       alert(response.data);
-      history.push(`/words/${props.currentIdLevel}`);
+      history.push(`/${userName}/level/${idSource}/words/${idLevel}`);
     });
   };
 
@@ -34,21 +36,8 @@ const AddWordFrom = (props) => {
             e.preventDefault();
             addWord();
           }}
+          encType="multipart/form-data"
         >
-          <label>ID : </label>
-          <input
-            type="number"
-            onChange={(e) => {
-              setId(e.target.value);
-            }}
-          />
-          <label>ID Level : </label>
-          <input
-            type="number"
-            onChange={(e) => {
-              setIdLevel(e.target.value);
-            }}
-          />
           <label>Word : </label>
           <input
             type="text"
@@ -63,6 +52,22 @@ const AddWordFrom = (props) => {
               setMeaning(e.target.value);
             }}
           />
+          <label for="imageWord">Select a file</label>
+          <input
+            type="file"
+            name="imageWord"
+            onChange={(e) => {
+              setFileSelected(e.target.files[0]);
+            }}
+          />
+          <label for="audioWord">Select a audio</label>
+          <input
+            type="file"
+            name="audioWord"
+            onChange={(e) => {
+              setAudioSelected(e.target.files[0]);
+            }}
+          />
           <button className="submit-btn" type="submit">
             <span className="text">
               Add
@@ -74,7 +79,7 @@ const AddWordFrom = (props) => {
           <button
             className="cancel-btn"
             onClick={() => {
-              history.push(`/words/${props.currentIdLevel}`);
+              history.push(`/${userName}/level/${idSource}/words/${idLevel}`);
             }}
             type="button"
           >

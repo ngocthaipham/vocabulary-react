@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import Course from "./courseApi";
 import { Link } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleRight,
@@ -11,14 +12,17 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 const ShowCourseTable = (props) => {
   const [coursesList, setCourseList] = useState([]);
- 
+  const { userName } = useParams();
+  const history = useHistory();
+
   useEffect(() => {
-    Axios.get("http://localhost:5000/sources").then((response) => {
+    Axios.get(`http://localhost:5000/sources/${userName}`, {
+      withCredentials: true,
+    }).then((response) => {
       setCourseList(response.data);
     });
   }, []);
 
-  
   const removeCourse = (id) => {
     Course.deleteCourse(id).then((response) => {
       alert("remove success");
@@ -30,10 +34,22 @@ const ShowCourseTable = (props) => {
     props.updateCurrentIdCourse(id);
   };
 
+  const logout = () => {
+    Axios.get("http://localhost:5000/logout", { withCredentials: true }).then(
+      (response) => {
+        alert(response.data);
+        history.push("/");
+      }
+    );
+  };
 
   return (
     <>
-      <Link to={"/addcourse"}>
+      <div>
+        <p>{`hi,${userName}`}</p>
+        <button onClick={logout}>Logout</button>
+      </div>
+      <Link to={`/${userName}/addcourse`}>
         <button className="add-btn">
           <span className="text">Add a new course</span>
           <span className="add-icon">
@@ -49,17 +65,24 @@ const ShowCourseTable = (props) => {
               <th>ID</th>
               <th>Name Source</th>
               <th>Description Source</th>
+              <th>Image</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody className="content">
             {coursesList.map((course) => (
-              <tr key={course.idSource} >
+              <tr key={course.idSource}>
                 <td>{course.idSource}</td>
                 <td>{course.nameSource}</td>
                 <td>{course.desSource}</td>
                 <td>
-                  <Link to={`/levels/${course.idSource}`}>
+                  <img
+                    className="image"
+                    src={`http://localhost:5000/images/${course.imageSource}`}
+                  ></img>
+                </td>
+                <td>
+                  <Link to={`/${userName}/levels/${course.idSource}`}>
                     <button
                       className="view-btn"
                       onClick={() => {
@@ -71,10 +94,10 @@ const ShowCourseTable = (props) => {
                       </div>
                     </button>
                   </Link>
-                  <Link to={`/editcourse/${course.idSource}/${course.nameSource}/${course.desSource}`} >
-                    <button
-                      className="edit-btn"
-                    >
+                  <Link
+                    to={`/${userName}/editcourse/${course.idSource}/${course.nameSource}/${course.desSource}`}
+                  >
+                    <button className="edit-btn">
                       <div>
                         Edit <FontAwesomeIcon icon={faPenSquare} />
                         <div className="circle"></div>

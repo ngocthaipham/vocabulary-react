@@ -13,6 +13,14 @@ h3 {
   text-transform: uppercase;
   font-weight: 300;
 }
+.image {
+  height: 120px;
+  width: 200px;
+}
+.audio {
+  height: 100px;
+  width: 250px;
+}
 body {
   font-family: "Roboto", sans-serif;
   background: linear-gradient(to right, #25c481, #25b7c4);

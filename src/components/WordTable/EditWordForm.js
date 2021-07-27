@@ -4,26 +4,26 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useHistory, useParams } from "react-router-dom";
 
-const EditWordForm = (props) => {
-  const [newId, setNewId] = useState();
-  const [newIdLevel, setNewIdLevel] = useState();
+const EditWordForm = () => {
   const [newVocab, setNewVocab] = useState("");
   const [newMeaning, setNewMeaning] = useState("");
+  const [newFileSelected, setNewFileSelected] = useState();
+  const [newAudioSelected, setNewAudioSelected] = useState();
 
-  const { id, idLevel, vocab, meaning } = useParams();
+  const { userName, idSource, idLevel, id, vocab, meaning } = useParams();
 
   let history = useHistory();
 
   const updateWord = (id) => {
-    var data = {
-      idLevel: newIdLevel,
-      vocab: newVocab,
-      meaning: newMeaning,
-    };
-
+    var data = new FormData();
+    data.append("idLevel", idLevel);
+    data.append("vocab", newVocab);
+    data.append("meaning", newMeaning);
+    data.append("imageWord", newFileSelected);
+    data.append("audioWord", newAudioSelected);
     Word.editWord(id, data).then((response) => {
       alert(response.data);
-      history.push(`/words/${props.currentIdLevel}`);
+      history.push(`/${userName}/level/${idSource}/words/${idLevel}`);
     });
   };
 
@@ -36,23 +36,8 @@ const EditWordForm = (props) => {
             e.preventDefault();
             updateWord(id);
           }}
+          encType="multipart/form-data"
         >
-          <label>ID : </label>
-          <input
-            type="number"
-            defaultValue={id}
-            onChange={(e) => {
-              setNewId(e.target.value);
-            }}
-          />
-          <label>ID Level : </label>
-          <input
-            type="number"
-            defaultValue={idLevel}
-            onChange={(e) => {
-              setNewIdLevel(e.target.value);
-            }}
-          />
           <label>Word : </label>
           <input
             type="text"
@@ -69,6 +54,22 @@ const EditWordForm = (props) => {
               setNewMeaning(e.target.value);
             }}
           />
+          <label for="imageWord">Select a file</label>
+          <input
+            type="file"
+            name="imageWord"
+            onChange={(e) => {
+              setNewFileSelected(e.target.files[0]);
+            }}
+          />
+          <label for="audioWord">Select a audio</label>
+          <input
+            type="file"
+            name="audioWord"
+            onChange={(e) => {
+              setNewAudioSelected(e.target.files[0]);
+            }}
+          />
           <button className="submit-btn" type="submit">
             <span className="text">
               Save
@@ -80,7 +81,7 @@ const EditWordForm = (props) => {
           <button
             className="cancel-btn"
             onClick={() => {
-              history.push(`/words/${props.currentIdLevel}`);
+              history.push(`/${userName}/level/${idSource}/words/${idLevel}`);
             }}
             type="button"
           >

@@ -12,13 +12,13 @@ import {
 
 const ShowLevelTable = (props) => {
   const [levelList, setLevelList] = useState([]);
-
-  const { id } = useParams();
+  const { userName, idSource } = useParams();
 
   useEffect(
     () =>
-      Level.getLevelTable(id).then((response) => {
+      Level.getLevelTable(idSource).then((response) => {
         setLevelList(response.data);
+        console.log(response.data);
       }),
     []
   );
@@ -26,7 +26,7 @@ const ShowLevelTable = (props) => {
   const removeLevel = (id) => {
     Level.deleteLevel(id).then((response) => {
       alert("remove success");
-      setLevelList(response.data);
+      setLevelList(levelList.filter((level) => level.idLevel !== id));
     });
   };
 
@@ -36,7 +36,7 @@ const ShowLevelTable = (props) => {
 
   return (
     <>
-      <Link to={`/levels/${props.currentIdCourse}/addlevel`}>
+      <Link to={`/${userName}/levels/${idSource}/addlevel`}>
         <button className="add-btn">
           <span className="text">Add a new level</span>
           <span className="add-icon">
@@ -53,9 +53,10 @@ const ShowLevelTable = (props) => {
                 <th>ID</th>
                 <th>Level</th>
                 <th>ID Source</th>
+                <th>Image</th>
                 <th>Actions</th>
                 <th>
-                  <Link to={"/"}>
+                  <Link to={`/${userName}`}>
                     <button className="back-btn">
                       <div className="outer">
                         <div className="inner">
@@ -74,7 +75,15 @@ const ShowLevelTable = (props) => {
                   <td>{level.level}</td>
                   <td>{level.idSource}</td>
                   <td>
-                    <Link to={`/words/${level.idLevel}`}>
+                    <img
+                      className="image"
+                      src={`http://localhost:5000/images/${level.imageLevel}`}
+                    ></img>
+                  </td>
+                  <td>
+                    <Link
+                      to={`/${userName}/level/${idSource}/words/${level.idLevel}`}
+                    >
                       <button
                         className="view-btn"
                         onClick={() => {
@@ -87,7 +96,7 @@ const ShowLevelTable = (props) => {
                       </button>
                     </Link>
                     <Link
-                      to={`/levels/${props.currentIdCourse}/editlevel/${level.idLevel}/${level.level}/${level.idSource}`}
+                      to={`/${userName}/levels/${idSource}/editlevel/${level.idLevel}/${level.level}`}
                     >
                       <button className="edit-btn">
                         <div>

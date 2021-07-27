@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Word from ".././WordTable/wordApi";
+import ReactAudioPlayer from "react-audio-player";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParams } from "react-router-dom";
@@ -10,11 +11,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 const ShowWordTable = (props) => {
   const [wordList, setWordList] = useState([]);
-  const { id } = useParams();
+  const { userName, idSource, idLevel } = useParams();
 
   useEffect(
     () =>
-      Word.getWordTable(id).then((response) => {
+      Word.getWordTable(idLevel).then((response) => {
         setWordList(response.data);
       }),
     []
@@ -22,21 +23,15 @@ const ShowWordTable = (props) => {
   const removeWord = (id) => {
     Word.deleteWord(id).then((response) => {
       alert("remove success");
-      setWordList(response.data);
+      setWordList(wordList.filter((word) => word.id !== id));
     });
   };
 
-  // const renderAfterRemove = () => {
-  //   Word.getWordTable(props.currentIdLevel).then((response) => {
-  //     reRender(response.data);
-  //   });
-  // };
-
   return (
     <>
-      <Link to={`/words/${props.currentIdLevel}/addword`}>
+      <Link to={`/${userName}/level/${idSource}/words/${idLevel}/addword`}>
         <button className="add-btn">
-          <span className="text">Add a new level</span>
+          <span className="text">Add a new word</span>
           <span className="add-icon">
             <FontAwesomeIcon icon={faPlus} />
           </span>
@@ -50,9 +45,11 @@ const ShowWordTable = (props) => {
               <th>ID Level</th>
               <th>Word</th>
               <th>Meaning</th>
+              <th>Image</th>
+              <th>Audio</th>
               <th>Actions</th>
               <th>
-                <Link to={`/levels/${props.currentIdLevel}`}>
+                <Link to={`/${userName}/levels/${idSource}`}>
                   <button className="back-btn">
                     <div class="outer">
                       <div class="inner">
@@ -72,8 +69,21 @@ const ShowWordTable = (props) => {
                 <td>{word.vocab}</td>
                 <td>{word.meaning}</td>
                 <td>
+                  <img
+                    className="image"
+                    src={`http://localhost:5000/images/${word.imageWord}`}
+                  ></img>
+                </td>
+                <td>
+                  <ReactAudioPlayer
+                    className="audio"
+                    src={`http://localhost:5000/audios/${word.audioWord}`}
+                    controls
+                  />
+                </td>
+                <td>
                   <Link
-                    to={`/words/${props.currentIdLevel}/editword/${word.id}/${word.idLevel}/${word.vocab}/${word.meaning}`}
+                    to={`/${userName}/level/${idSource}/words/${idLevel}/editword/${word.id}/${word.vocab}/${word.meaning}`}
                   >
                     <button className="edit-btn">
                       <div>

@@ -1,7 +1,11 @@
 import http from "../../http-common";
 
 const addLevel = (data) => {
-  return http.post("/levels", data);
+  return http.post("/levels", data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 };
 
 const deleteLevel = (id) => {
@@ -21,7 +25,11 @@ const getWordTable = (id) => {
 };
 
 const editLevel = (id, data) => {
-  return http.put(`/levels/${id}`, data);
+  return http.put(`/levels/${id}`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 };
 
 export default {
