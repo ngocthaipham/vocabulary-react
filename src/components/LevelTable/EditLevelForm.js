@@ -1,13 +1,17 @@
 import Level from "./levelApi";
 import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useHistory, useParams } from "react-router-dom";
+import SaveButton from "../Button/SaveButton";
+import CancelButton from "../Button/CancelButton";
+import TextInput from "../Input/TextInput";
+import ImageInput from "../Input/ImageInput";
 
 const EditLevelForm = () => {
   const [newLevel, setNewLevel] = useState("");
   const [newFileSelected, setNewFileSelected] = useState();
-  const { userName, idSource, idLevel, level } = useParams();
+  const [previewImage, setPreviewImage] = useState();
+
+  const { userName, idSource, idLevel, level, imageLevel } = useParams();
 
   let history = useHistory();
 
@@ -23,58 +27,59 @@ const EditLevelForm = () => {
     });
   };
 
+  function cancel() {
+    history.push(`/${userName}/levels/${idSource}`);
+  }
+
+  const updateNewLevel = (res) => {
+    setNewLevel(res);
+  };
+
+  const updateFileSelected = (res) => {
+    setNewFileSelected(res);
+  };
+  const updatePreviewImage = (res) => {
+    setPreviewImage(res);
+  };
+
   return (
     <>
-      <div className="edit-form">
-        <h3>Edit Level</h3>
-
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            updateLevel(idLevel);
-          }}
-          encType="multipart/form-data"
-        >
-          <label>New Level : </label>
-          <input
-            type="number"
-            defaultValue={level}
-            onChange={(e) => {
-              setNewLevel(e.target.value);
-            }}
-          />
-          <label for="imageLevel">Select a file</label>
-          <input
-            type="file"
-            name="imageLevel"
-            onChange={(e) => {
-              setNewFileSelected(e.target.files[0]);
-            }}
-          />
-
-          <button className="submit-btn" type="submit">
-            <span className="text">
-              Save
-              <span className="submit-icon">
-                <FontAwesomeIcon icon={faCheck} />
-              </span>
-            </span>
-          </button>
-          <button
-            className="cancel-btn"
-            type="button"
-            onClick={() => {
-              history.push(`/${userName}/levels/${idSource}`);
-            }}
-          >
-            <span className="text">
-              Cancel
-              <span className="cancel-icon">
-                <FontAwesomeIcon icon={faTimes} />
-              </span>
-            </span>
-          </button>
-        </form>
+      <div className="form-container">
+        <h3 className="form-title">Edit Level</h3>
+        <div className="form-wrapper">
+          <div className="form">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                updateLevel(idLevel);
+              }}
+              encType="multipart/form-data"
+            >
+              <TextInput
+                text={"New Level"}
+                defaultValue={level}
+                onChange={updateNewLevel}
+              />
+              <label>
+                {newFileSelected ? (
+                  <ImageInput
+                    setFileSelected={updateFileSelected}
+                    setPreviewImage={updatePreviewImage}
+                    previewImage={previewImage}
+                  />
+                ) : (
+                  <ImageInput
+                    setFileSelected={updateFileSelected}
+                    setPreviewImage={updatePreviewImage}
+                    previewImage={`http://localhost:5000/images/${imageLevel}`}
+                  />
+                )}
+              </label>
+              <SaveButton />
+              <CancelButton cancel={cancel} />
+            </form>
+          </div>
+        </div>
       </div>
     </>
   );

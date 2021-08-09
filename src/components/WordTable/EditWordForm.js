@@ -1,16 +1,30 @@
 import React, { useState } from "react";
 import Word from "./wordApi";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useHistory, useParams } from "react-router-dom";
+import SaveButton from "../Button/SaveButton";
+import CancelButton from "../Button/CancelButton";
+import TextInput from "../Input/TextInput";
+import ImageInput from "../Input/ImageInput";
+import AudioInput from "../Input/AudioInput";
 
 const EditWordForm = () => {
   const [newVocab, setNewVocab] = useState("");
   const [newMeaning, setNewMeaning] = useState("");
   const [newFileSelected, setNewFileSelected] = useState();
   const [newAudioSelected, setNewAudioSelected] = useState();
+  const [previewImage, setPreviewImage] = useState();
+  const [previewAudio, setPreviewAudio] = useState();
 
-  const { userName, idSource, idLevel, id, vocab, meaning } = useParams();
+  const {
+    userName,
+    idSource,
+    idLevel,
+    id,
+    vocab,
+    meaning,
+    imageWord,
+    audioWord,
+  } = useParams();
 
   let history = useHistory();
 
@@ -27,72 +41,85 @@ const EditWordForm = () => {
     });
   };
 
+  function cancel() {
+    history.push(`/${userName}/level/${idSource}/words/${idLevel}`);
+  }
+  const updateVocab = (res) => {
+    setNewVocab(res);
+  };
+  const updateMeaning = (res) => {
+    setNewMeaning(res);
+  };
+  const updateFileSelected = (res) => {
+    setNewFileSelected(res);
+  };
+  const updatePreviewImage = (res) => {
+    setPreviewImage(res);
+  };
+  const updateAudioSelected = (res) => {
+    setNewAudioSelected(res);
+  };
+  const updatePreviewAudio = (res) => {
+    setPreviewAudio(res);
+  };
   return (
     <>
-      <div className="edit-form">
-        <h3>Edit Word</h3>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            updateWord(id);
-          }}
-          encType="multipart/form-data"
-        >
-          <label>Word : </label>
-          <input
-            type="text"
-            defaultValue={vocab}
-            onChange={(e) => {
-              setNewVocab(e.target.value);
-            }}
-          />
-          <label>Meaning : </label>
-          <input
-            type="text"
-            defaultValue={meaning}
-            onChange={(e) => {
-              setNewMeaning(e.target.value);
-            }}
-          />
-          <label for="imageWord">Select a file</label>
-          <input
-            type="file"
-            name="imageWord"
-            onChange={(e) => {
-              setNewFileSelected(e.target.files[0]);
-            }}
-          />
-          <label for="audioWord">Select a audio</label>
-          <input
-            type="file"
-            name="audioWord"
-            onChange={(e) => {
-              setNewAudioSelected(e.target.files[0]);
-            }}
-          />
-          <button className="submit-btn" type="submit">
-            <span className="text">
-              Save
-              <span className="submit-icon">
-                <FontAwesomeIcon icon={faCheck} />
-              </span>
-            </span>
-          </button>
-          <button
-            className="cancel-btn"
-            onClick={() => {
-              history.push(`/${userName}/level/${idSource}/words/${idLevel}`);
-            }}
-            type="button"
-          >
-            <span className="text">
-              Cancel
-              <span className="cancel-icon">
-                <FontAwesomeIcon icon={faTimes} />
-              </span>
-            </span>
-          </button>
-        </form>
+      <div className="form-container">
+        <h3 className="form-title">Edit Word</h3>
+        <div className="form-wrapper">
+          <div className="form">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                updateWord(id);
+              }}
+              encType="multipart/form-data"
+            >
+              <TextInput
+                text={"New Word"}
+                defaultValue={vocab}
+                onChange={updateVocab}
+              />
+              <TextInput
+                text={"New Meaning"}
+                defaultValue={meaning}
+                onChange={updateMeaning}
+              />
+              <label>
+                {newFileSelected ? (
+                  <ImageInput
+                    setFileSelected={updateFileSelected}
+                    setPreviewImage={updatePreviewImage}
+                    previewImage={previewImage}
+                  />
+                ) : (
+                  <ImageInput
+                    setFileSelected={updateFileSelected}
+                    setPreviewImage={updatePreviewImage}
+                    previewImage={`http://localhost:5000/images/${imageWord}`}
+                  />
+                )}
+              </label>
+              <br />
+              {newAudioSelected ? (
+                <AudioInput
+                  setAudioSelected={updateAudioSelected}
+                  setPreviewAudio={updatePreviewAudio}
+                  previewAudio={previewAudio}
+                />
+              ) : (
+                <AudioInput
+                  setAudioSelected={updateAudioSelected}
+                  setPreviewAudio={updatePreviewAudio}
+                  previewAudio={`http://localhost:5000/audios/${audioWord}`}
+                />
+              )}
+              <br />
+              <SaveButton />
+              <CancelButton cancel={cancel} />
+            </form>
+          </div>
+        </div>
       </div>
     </>
   );

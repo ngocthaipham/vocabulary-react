@@ -1,0 +1,35 @@
+* {
+	margin: 0px; 
+	padding: 0px; 
+	box-sizing: border-box;
+}
+.welcome-content {
+    text-align: center;
+	padding: 50px 350px 20px 350px ;
+	font-size:50px;
+	font-weight:700;
+	margin:0px;
+}
+.login-btn-wrapper-1 {
+	width: 150px ;
+  display: block;
+  position: relative;
+  z-index: 1;
+  border-radius: 25px;
+  overflow: hidden;
+  margin: 5px auto;
+}
+.text-center {
+	text-align: center;
+}
+.txt1 {
+    font-size: 20px;
+    color: #fff;
+    line-height: 1.5;
+  }
+
+  .txt2 {
+    font-size: 20px;
+    color: #333333;
+    line-height: 1.5;
+  }
