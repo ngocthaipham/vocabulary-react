@@ -12,10 +12,15 @@ const deleteCourse = (id) => {
   return http.delete(`/sources/${id}`);
 };
 
-const get = () => {
-  return http.get("/sources");
+const get = (userName) => {
+  return http.get(`/sources/${userName}`, {
+    withCredentials: true,
+  });
 };
 
+const logout = () => {
+  return http.get("http://localhost:5000/logout", { withCredentials: true });
+};
 const getLevelTable = (id) => {
   return http.get(`/levels/${id}`);
 };
@@ -27,4 +32,4 @@ const editCourse = (id, data) => {
   });
 };
 
-export default { addCourse, deleteCourse, getLevelTable, editCourse, get };
+export default { addCourse, deleteCourse, getLevelTable, editCourse, get, logout };

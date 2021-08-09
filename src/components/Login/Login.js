@@ -3,6 +3,7 @@ import Axios from "axios";
 import { useHistory } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
+import "./Login.css";
 
 const Login = () => {
   const [userName, setUserName] = useState("");
@@ -23,35 +24,49 @@ const Login = () => {
 
   return (
     <>
-      <div>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            login();
-          }}
-        >
-          <input
-            type="text"
-            placeholder="username"
-            onChange={(e) => {
-              setUserName(e.target.value);
-            }}
-          ></input>
-          <br />
-          <input
-            type="password"
-            placeholder="password"
-            onChange={(e) => {
-              setUserPassword(e.target.value);
-            }}
-          ></input>
-          <button>login</button>
-        </form>
+      <div className="container-login">
+        <div className="login-wrapper">
+          <div className="login-form">
+            <p className="login-title">Welcome</p>
+            <img
+              className="login-logo"
+              src={"http://localhost:5000/images/imageSource1627386479926.png"}
+            ></img>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                login();
+              }}
+            >
+              <input
+                className="login-input"
+                type="text"
+                placeholder="Username"
+                onChange={(e) => {
+                  setUserName(e.target.value);
+                }}
+              ></input>
+              <input
+                className="login-input"
+                type="password"
+                placeholder="Password"
+                onChange={(e) => {
+                  setUserPassword(e.target.value);
+                }}
+              ></input>
+              <div className="login-btn-wrapper">
+                <button className="login-btn">login</button>
+              </div>
+              <div className="login-btn-wrapper">
+              <button className="login-btn"
+                  onClick={() =>{history.push('/')}}>Back</button>
+              </div>
+            </form>
+           
+            
+          </div>
+        </div>
       </div>
-
-      <Link to="/">
-        <button>Back</button>
-      </Link>
     </>
   );
 };

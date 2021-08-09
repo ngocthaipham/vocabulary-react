@@ -1,0 +1,24 @@
+.form-title {
+  text-align: center;
+  font-size: 30px;
+  font-weight: 300;
+  margin-top: 50px;
+}
+.form-container {
+  width: 450px;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  margin: 0 auto;
+}
+.form-wrapper {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 33px 55px 33px 55px;
+}
+.form {
+    text-align: center;
+  width: 100%;
+}
+

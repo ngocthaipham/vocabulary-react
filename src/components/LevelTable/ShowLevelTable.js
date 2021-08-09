@@ -2,15 +2,13 @@ import React, { useEffect, useState } from "react";
 import Level from "./levelApi";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faAngleRight,
-  faPenSquare,
-  faTrash,
-  faPlus,
-} from "@fortawesome/free-solid-svg-icons";
+import AddButton from "../Button/AddButton"
+import ViewButton from "../Button/ViewButton";
+import EditButton from "../Button/EditButton";
+import DeleteButton from "../Button/DeleteButton";
+import BackButton from "../Button/BackButton";
 
-const ShowLevelTable = (props) => {
+const ShowLevelTable = () => {
   const [levelList, setLevelList] = useState([]);
   const { userName, idSource } = useParams();
 
@@ -18,7 +16,6 @@ const ShowLevelTable = (props) => {
     () =>
       Level.getLevelTable(idSource).then((response) => {
         setLevelList(response.data);
-        console.log(response.data);
       }),
     []
   );
@@ -30,50 +27,34 @@ const ShowLevelTable = (props) => {
     });
   };
 
-  const showWord = (id) => {
-    props.updateCurrentIdLevel(id);
-  };
-
   return (
     <>
+      <h1>English Course</h1>
+
       <Link to={`/${userName}/levels/${idSource}/addlevel`}>
-        <button className="add-btn">
-          <span className="text">Add a new level</span>
-          <span className="add-icon">
-            <FontAwesomeIcon icon={faPlus} />
-          </span>
-        </button>
+        <AddButton text={'Add a new level'} />
       </Link>
+      <div className="back-btn-container">
+        {" "}
+        <Link to={`/${userName}`}>
+         <BackButton text={'hello'} />
+        </Link>
+      </div>
 
       <div>
         <div>
           <table border="0" cellPadding="0" cellSpacing="0">
             <thead className="header">
               <tr>
-                <th>ID</th>
                 <th>Level</th>
-                <th>ID Source</th>
                 <th>Image</th>
                 <th>Actions</th>
-                <th>
-                  <Link to={`/${userName}`}>
-                    <button className="back-btn">
-                      <div className="outer">
-                        <div className="inner">
-                          <label className="back-btn-content">Back</label>
-                        </div>
-                      </div>
-                    </button>
-                  </Link>
-                </th>
               </tr>
             </thead>
             <tbody>
               {levelList.map((level) => (
                 <tr key={level.idLevel}>
-                  <td>{level.idLevel}</td>
                   <td>{level.level}</td>
-                  <td>{level.idSource}</td>
                   <td>
                     <img
                       className="image"
@@ -84,40 +65,14 @@ const ShowLevelTable = (props) => {
                     <Link
                       to={`/${userName}/level/${idSource}/words/${level.idLevel}`}
                     >
-                      <button
-                        className="view-btn"
-                        onClick={() => {
-                          showWord(level.idLevel);
-                        }}
-                      >
-                        <div>
-                          View <FontAwesomeIcon icon={faAngleRight} />
-                        </div>
-                      </button>
+                      <ViewButton />
                     </Link>
                     <Link
-                      to={`/${userName}/levels/${idSource}/editlevel/${level.idLevel}/${level.level}`}
+                      to={`/${userName}/levels/${idSource}/editlevel/${level.idLevel}/${level.level}/${level.imageLevel}`}
                     >
-                      <button className="edit-btn">
-                        <div>
-                          Edit <FontAwesomeIcon icon={faPenSquare} />
-                          <div className="circle"></div>
-                        </div>
-                      </button>
+                      <EditButton />
                     </Link>
-                    <button
-                      className="delete-btn"
-                      onClick={() => {
-                        removeLevel(level.idLevel);
-                      }}
-                    >
-                      <span className="text">
-                        Delete
-                        <span className="trash-icon">
-                          <FontAwesomeIcon icon={faTrash} />
-                        </span>
-                      </span>
-                    </button>
+                    <DeleteButton remove={removeLevel} id={level.idLevel} />
                   </td>
                 </tr>
               ))}
